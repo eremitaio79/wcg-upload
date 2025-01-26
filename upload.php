@@ -23,7 +23,17 @@ include_once "./config.php";
     <main class="container my-5">
         <div class="row">
             <div class="col-12">
-                xxx
+
+                <!-- Upload INI -->
+
+                <!-- Componente de upload de múltiplos arquivos -->
+                <div class="mt-3">
+                    <label for="fileUpload" class="form-label">Selecione os arquivos para upload</label>
+                    <input class="form-control" type="file" id="fileUpload" name="files[]" multiple>
+                </div>
+
+                <!-- Upload END -->
+
             </div>
         </div>
     </main>

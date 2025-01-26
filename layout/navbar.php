@@ -7,20 +7,39 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav me-auto">
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="#">Home</a>
+                    <a class="nav-link active" aria-current="page" href="./index.php" target="_self">Home</a>
                 </li>
             </ul>
             <div class="btn-group">
-                <button class="btn btn-primary">Upload</button>
-                <button class="btn btn-warning">Criar Pasta</button>
+                <a href="./upload.php" target="_self" class="btn btn-warning" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Fazer Novo Upload">
+                    <i class="fa-solid fa-image"></i>&nbsp;Upload
+                </a>
+                <a href="./create-dir.php" target="_self" class="btn btn-secondary" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Criar Nova Pasta"><i class="fa-solid fa-folder-plus"></i></a>
+                <a href="./manage-dir.php" target="_self" class="btn btn-secondary" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Gerenciador de Pastas"><i class="fa-solid fa-folder-tree"></i></a>
                 <div class="btn-group">
                     <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                        Lista de Pastas
+                        <i class="fa-solid fa-folder-open"></i>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
-                        <li><a class="dropdown-item" href="#">Pasta 1</a></li>
-                        <li><a class="dropdown-item" href="#">Pasta 2</a></li>
-                        <li><a class="dropdown-item" href="#">Pasta 3</a></li>
+                        <?php
+                        // Buscar as 8 primeiras pastas no banco de dados
+                        include_once "./config.php";
+
+                        $query = "SELECT * FROM wcg_upload_dir ORDER BY created_at ASC LIMIT 8";
+                        $stmt = $conn->prepare($query);
+                        $stmt->execute();
+                        $folders = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+                        // Exibe as pastas no dropdown
+                        foreach ($folders as $folder):
+                        ?>
+                            <li><a class="dropdown-item" href="#"><i class="fa-solid fa-folder"></i>&nbsp;<?= htmlspecialchars($folder['dir_name']); ?>...</a></li>
+                        <?php endforeach; ?>
+                        <!-- Item adicional para abrir o gerenciador de pastas -->
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li><a class="dropdown-item" href="./manage-dir.php">Gerenciar Pastas</a></li>
                     </ul>
                 </div>
             </div>
