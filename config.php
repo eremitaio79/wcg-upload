@@ -1,10 +1,9 @@
 <?php
 
-include_once "./dependences.php";
 /** 
- * Arquivo de configurações do sistema de uploads.
+ * ARQUIVO DE CONFIGURAÇÕES E PARAMETRIZAÇÕES DO SISTEMA DE UPLOAD
  * Author: Paulo Eremita
- * Created at 25/01/2025
+ * Created at: 25/01/2025
  */
 
 /** ----------------------------------------------------------------------------------------------------------------- */
@@ -35,5 +34,12 @@ try {
 
 /** ----------------------------------------------------------------------------------------------------------------- */
 
-// Parâmetros do sistema.
+// Parametrizações do sistema.
+
 define('NAVBAR_TITLE', 'Upload Tool');
+define('SYSTEM_TITLE', 'Upload Tool Para Sites e Sistemas');
+
+/** ----------------------------------------------------------------------------------------------------------------- */
+
+// Caminho base para os uploads.
+$basePath = './files/';

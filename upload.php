@@ -1,5 +1,10 @@
 <?php
 include_once "./config.php";
+
+// Obter as pastas com status=1
+$stmt = $conn->prepare("SELECT id, dir_name, path FROM wcg_upload_dir WHERE status = 1");
+$stmt->execute();
+$folders = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 
@@ -10,7 +15,8 @@ include_once "./config.php";
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Bootstrap 5.3 Index</title>
+
+    <title><?= SYSTEM_TITLE; ?></title>
 
     <?php include_once "./dependences.php"; ?>
 
@@ -21,13 +27,32 @@ include_once "./config.php";
         <?php include_once "./layout/navbar.php"; ?>
     </header>
 
-    <main class="container my-5">
-        <div class="row">
-            <div class="col-12">
-                ...
+    <div class="container mt-5">
+        <h2 class="mb-4">Upload de Arquivos</h2>
+        <form action="upload-exec.php" method="POST" enctype="multipart/form-data">
+            <div class="row mb-3">
+                <!-- Select de Pastas -->
+                <div class="col-md-4">
+                    <label for="folderSelect" class="form-label">Selecione uma Pasta</label>
+                    <select id="folderSelect" name="folder_id" class="form-select select2" required>
+                        <option value="" disabled selected>Escolha uma pasta...</option>
+                        <?php foreach ($folders as $folder): ?>
+                            <option value="<?= htmlspecialchars($folder['id']); ?>">
+                                <?= htmlspecialchars($folder['dir_name']); ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
             </div>
-        </div>
-    </main>
+            <div class="mb-3">
+                <!-- Campo de Arquivos -->
+                <label for="fileUpload" class="form-label">Selecione Arquivos</label>
+                <input type="file" id="fileUpload" name="files[]" class="form-control" multiple required>
+                <small class="text-muted">Tipos permitidos: Imagens (JPG, PNG, GIF, CDR, PSD) e Documentos (PDF, DOC, DOCX, XLS, XLSX, TXT, ZIP, RAR).</small>
+            </div>
+            <button type="submit" class="btn btn-primary">Fazer Upload</button>
+        </form>
+    </div>
 
 
 </body>
