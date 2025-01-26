@@ -76,7 +76,14 @@ include_once "./config.php";
                         </select>
                     </div>
 
-                    <button type="submit" class="btn btn-primary">Criar Pasta</button>
+                    <hr />
+
+                    <div class="row">
+                        <div class="col-12 text-end">
+                            <button type="submit" class="btn btn-primary">Criar Pasta</button>
+                            <a href="./index.php" target="_self" type="button" class="btn btn-secondary">Cancelar</a>
+                        </div>
+                    </div>
                 </form>
             </div>
         </div>

@@ -24,7 +24,12 @@ function cleanFolderName($folderName)
 // Função para criar a nova pasta
 function createFolder($folderName, $folderType)
 {
-    $basePath = './files/';
+    // Verifica se $basePath está definido no arquivo config.php
+    global $basePath;
+    if (!isset($basePath) || empty($basePath)) {
+        return "Caminho base não está definido!";
+    }
+
     $targetPath = '';
 
     // Limpeza do nome da pasta

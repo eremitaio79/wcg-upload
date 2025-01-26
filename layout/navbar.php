@@ -25,15 +25,15 @@
                         // Buscar as 8 primeiras pastas no banco de dados
                         include_once "./config.php";
 
-                        $query = "SELECT * FROM wcg_upload_dir ORDER BY created_at ASC LIMIT 8";
-                        $stmt = $conn->prepare($query);
-                        $stmt->execute();
-                        $folders = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                        $queryNavbar = "SELECT * FROM wcg_upload_dir ORDER BY created_at ASC LIMIT 8";
+                        $stmtNavbar = $conn->prepare($queryNavbar);
+                        $stmtNavbar->execute();
+                        $foldersNavbar = $stmtNavbar->fetchAll(PDO::FETCH_ASSOC);
 
                         // Exibe as pastas no dropdown
-                        foreach ($folders as $folder):
+                        foreach ($foldersNavbar as $folderNavbar):
                         ?>
-                            <li><a class="dropdown-item" href="#"><i class="fa-solid fa-folder"></i>&nbsp;<?= htmlspecialchars($folder['dir_name']); ?>...</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="fa-solid fa-folder"></i>&nbsp;<?= htmlspecialchars($folderNavbar['dir_name']); ?>...</a></li>
                         <?php endforeach; ?>
                         <!-- Item adicional para abrir o gerenciador de pastas -->
                         <li>

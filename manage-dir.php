@@ -12,6 +12,8 @@ function getFolders($conn)
 }
 
 $folders = getFolders($conn);
+// var_dump($folders);
+// die();
 ?>
 
 <!DOCTYPE html>
@@ -22,7 +24,9 @@ $folders = getFolders($conn);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title><?= SYSTEM_TITLE; ?></title>
+
     <?php include_once "./dependences.php"; ?>
+
 </head>
 
 <body>
@@ -64,7 +68,7 @@ $folders = getFolders($conn);
                     </div>
                 <?php else: ?>
                     <!-- Tabela de pastas -->
-                    <table class="table table-striped table-hover">
+                    <table id="foldersTable" class="table table-striped table-hover">
                         <thead>
                             <tr>
                                 <th>Nome da Pasta</th>
@@ -77,8 +81,14 @@ $folders = getFolders($conn);
                         <tbody>
                             <?php foreach ($folders as $folder): ?>
                                 <tr>
-                                    <td><?= htmlspecialchars($folder['dir_name']); ?></td>
-                                    <td><?= htmlspecialchars($folder['path']); ?></td>
+                                    <td>
+                                        <i class="fa-solid fa-folder"></i>&nbsp;
+                                        <?= htmlspecialchars($folder['dir_name']); ?>
+                                    </td>
+                                    <td>
+                                        <i class="fa-solid fa-folder-tree"></i>&nbsp;
+                                        <?= htmlspecialchars($folder['path']); ?>
+                                    </td>
                                     <td><?= htmlspecialchars($folder['dir_type'] ?? 'Não definido'); ?></td>
                                     <td>
                                         <?= $folder['status'] == 1 ? 'Disponível' : ($folder['status'] == 0 ? 'Indisponível' : 'Não definido'); ?>
@@ -97,10 +107,46 @@ $folders = getFolders($conn);
                         </tbody>
                     </table>
 
+
+                    <div class="row">
+                        <div class="col-12 text-end">
+                            <hr />
+                            <a href="./index.php" target="_self" type="button" class="btn btn-secondary">Cancelar</a>
+                        </div>
+                    </div>
+
                 <?php endif; ?>
             </div>
         </div>
     </main>
+
+    <!-- <script>
+        $(document).ready(function() {
+            // Inicializando o DataTable para a tabela com id 'foldersTable'
+            $('#foldersTable').DataTable();
+        });
+    </script> -->
+
+    <script>
+        $(document).ready(() => {
+            // Inicializando o DataTable com a configuração padrão
+            $('#foldersTable').dataTable();
+        });
+
+        var table = new DataTable('#foldersTable', {
+            order: [
+                [0, 'desc'] // Ordem de exibição da tabela (coluna 0 em ordem decrescente)
+            ],
+            language: {
+                // Definindo o idioma para português (carregando o arquivo pt-BR.json)
+                url: './js/datatables2.2.1/pt-BR.json',
+            },
+            pageLength: 25, // Exibe 25 linhas por padrão
+        });
+    </script>
+
+
+
 </body>
 
 </html>

@@ -38,3 +38,8 @@ try {
 
 define('NAVBAR_TITLE', 'Upload Tool');
 define('SYSTEM_TITLE', 'Upload Tool Para Sites e Sistemas');
+
+/** ----------------------------------------------------------------------------------------------------------------- */
+
+// Caminho base para os uploads.
+$basePath = './files/';
