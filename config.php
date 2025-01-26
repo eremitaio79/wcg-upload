@@ -41,5 +41,8 @@ define('SYSTEM_TITLE', 'Upload Tool Para Sites e Sistemas');
 
 /** ----------------------------------------------------------------------------------------------------------------- */
 
+// URL padrão do sistema.
+define('URL_SISTEMA', 'http://localhost/codes-project/wcg-upload/');
+
 // Caminho base para os uploads.
 $basePath = './files/';
