@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $path = $folder['path'];
 
-    // Remove a pasta física
+    // Remove a pasta física e seus arquivos
     function deleteFolder($path)
     {
         if (is_dir($path)) {
@@ -29,23 +29,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 if (is_dir($fullPath)) {
                     deleteFolder($fullPath);
                 } else {
-                    unlink($fullPath);
+                    unlink($fullPath); // Exclui o arquivo
                 }
             }
-            return rmdir($path);
+            return rmdir($path); // Remove o diretório vazio
         }
         return false;
     }
 
     if (deleteFolder($path)) {
-        // Exclui o registro do banco de dados
-        $deleteStmt = $conn->prepare("DELETE FROM wcg_upload_dir WHERE id = :id");
-        $deleteStmt->bindParam(':id', $id);
+        try {
+            // Inicia uma transação para garantir consistência
+            $conn->beginTransaction();
 
-        if ($deleteStmt->execute()) {
-            $_SESSION['message'] = "Pasta excluída com sucesso.";
-        } else {
-            $_SESSION['message'] = "Erro ao excluir do banco de dados.";
+            // Exclui todos os arquivos associados à pasta
+            $deleteFilesStmt = $conn->prepare("DELETE FROM wcg_upload_files WHERE id_dir = :id");
+            $deleteFilesStmt->bindParam(':id', $id);
+            $deleteFilesStmt->execute();
+
+            // Exclui o registro da pasta no banco de dados
+            $deleteFolderStmt = $conn->prepare("DELETE FROM wcg_upload_dir WHERE id = :id");
+            $deleteFolderStmt->bindParam(':id', $id);
+            $deleteFolderStmt->execute();
+
+            // Confirma a transação
+            $conn->commit();
+            $_SESSION['message'] = "Pasta e arquivos excluídos com sucesso.";
+        } catch (Exception $e) {
+            $conn->rollBack();
+            $_SESSION['message'] = "Erro ao excluir do banco de dados: " . $e->getMessage();
         }
     } else {
         $_SESSION['message'] = "Erro ao excluir a pasta física.";
