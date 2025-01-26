@@ -72,7 +72,7 @@ include_once "./config.php";
                         <label for="folderType" class="form-label">Tipo de pasta</label>
                         <select class="form-select" id="folderType" name="folderType" required>
                             <option value="img">Imagem</option>
-                            <option value="pdf">Documentos PDF</option>
+                            <option value="pdf">Documentos</option>
                         </select>
                     </div>
 

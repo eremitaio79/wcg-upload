@@ -15,11 +15,11 @@ $folders = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  
+
     <title><?= SYSTEM_TITLE; ?></title>
 
     <?php include_once "./dependences.php"; ?>
-  
+
 </head>
 
 <body>
@@ -53,20 +53,6 @@ $folders = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <button type="submit" class="btn btn-primary">Fazer Upload</button>
         </form>
     </div>
-
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Select2 JS -->
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    <script>
-        // Inicializar Select2
-        document.addEventListener('DOMContentLoaded', () => {
-            $('.select2').select2({
-                placeholder: "Digite para buscar...",
-                allowClear: true
-            });
-        });
-    </script>
 
 
 </body>
