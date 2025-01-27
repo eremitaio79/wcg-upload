@@ -31,7 +31,7 @@ $image_url = URL_SISTEMA . ltrim($file['path'], '/');
     <?php include_once "./dependences.php"; ?>
 
     <!-- TUI Image Editor CSS -->
-    <link rel="stylesheet" href="https://uicdn.toast.com/tui-image-editor/latest/tui-image-editor.css">
+    <!-- <link rel="stylesheet" href="https://uicdn.toast.com/tui-image-editor/latest/tui-image-editor.css"> -->
     <style>
         #tui-image-editor {
             height: 700px;
@@ -61,9 +61,9 @@ $image_url = URL_SISTEMA . ltrim($file['path'], '/');
     </main>
 
     <!-- TUI Image Editor JS -->
-    <script src="https://uicdn.toast.com/tui-code-snippet/latest/tui-code-snippet.js"></script>
+    <!-- <script src="https://uicdn.toast.com/tui-code-snippet/latest/tui-code-snippet.js"></script>
     <script src="https://uicdn.toast.com/tui-color-picker/latest/tui-color-picker.js"></script>
-    <script src="https://uicdn.toast.com/tui-image-editor/latest/tui-image-editor.js"></script>
+    <script src="https://uicdn.toast.com/tui-image-editor/latest/tui-image-editor.js"></script> -->
 
     <script>
         // Inicializa o editor TUI
