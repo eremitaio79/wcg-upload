@@ -34,3 +34,12 @@
     });
     /* Bootstrap framework is imported here END. */
 </script>
+
+<!-- --------------------------------------------------------------------------------------------------------------- -->
+
+<!-- Toast UI Image Editor -->
+
+<script src="./js/tui-codes/tui-code-snippet.js"></script>
+<script src="./js/tui-codes/tui-color-picker.js"></script>
+<script src="./js/tui-codes/tui-image-editor.js"></script>
+<link href="./css/tui-image-editor/tui-image-editor.css" rel="stylesheet">

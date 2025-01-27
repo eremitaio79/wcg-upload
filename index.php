@@ -114,7 +114,9 @@ $files = getFilesWithFolders($conn);
                     });
                 </script>
 
-                <h3>Lista de Arquivos</h3>
+                <h3>Gerenciador de Arquivos</h3>
+
+                <hr />
 
                 <!-- Exibe alerta se não houver arquivos -->
                 <?php if (empty($files)): ?>

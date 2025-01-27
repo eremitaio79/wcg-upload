@@ -2,18 +2,21 @@
 session_start();
 include_once "./config.php";
 
-// Função para buscar as pastas do banco de dados
-function getFolders($conn)
+// Função para buscar as pastas e a contagem de arquivos do banco de dados
+function getFoldersWithFileCount($conn)
 {
-    $query = "SELECT * FROM wcg_upload_dir";
+    $query = "
+        SELECT 
+            d.*, 
+            (SELECT COUNT(*) FROM wcg_upload_files f WHERE f.id_dir = d.id) AS file_count
+        FROM wcg_upload_dir d
+    ";
     $stmt = $conn->prepare($query);
     $stmt->execute();
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
-$folders = getFolders($conn);
-// var_dump($folders);
-// die();
+$folders = getFoldersWithFileCount($conn);
 ?>
 
 <!DOCTYPE html>
@@ -26,7 +29,24 @@ $folders = getFolders($conn);
     <title><?= SYSTEM_TITLE; ?></title>
 
     <?php include_once "./dependences.php"; ?>
+    <style>
+        .badge {
+            font-size: 0.8em;
+        }
 
+        .btn-with-badge {
+            position: relative;
+            padding-right: 30px;
+            /* Espaço extra para o badge */
+        }
+
+        .btn-with-badge .badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            transform: translate(50%, -50%);
+        }
+    </style>
 </head>
 
 <body>
@@ -95,9 +115,17 @@ $folders = getFolders($conn);
                                     </td>
 
                                     <td class="text-center"> <!-- Centralizando as ações -->
-                                        <a href="view-folder.php?id=<?= $folder['id']; ?>" class="btn btn-success btn-sm" data-bs-toggle="tooltip" data-bs-title="Visualizar Arquivos na Pasta"><i class="fa-solid fa-eye"></i></a>
+                                        <a href="view-folder.php?id=<?= $folder['id']; ?>" class="btn btn-primary btn-sm position-relative" data-bs-toggle="tooltip" data-bs-title="Visualizar Arquivos na Pasta">
+                                            <i class="fa-regular fa-folder-open"></i>
+                                            <?php if ($folder['file_count'] > 0): ?>
+                                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                                    <?= $folder['file_count']; ?>
+                                                    <span class="visually-hidden">arquivos não lidos</span>
+                                                </span>
+                                            <?php endif; ?>
+                                        </a>
                                         <a href="edit-folder.php?id=<?= $folder['id']; ?>" class="btn btn-warning btn-sm" data-bs-toggle="tooltip" data-bs-title="Editar Pasta"><i class="fa-solid fa-pen-to-square"></i></a>
-                                        <form action="delete-folder.php" method="POST" style="display:inline;" onsubmit="return confirm('Tem certeza que deseja excluir esta pasta?')">
+                                        <form action="delete-folder.php" method="POST" style="display:inline;" onsubmit="return confirm('Tem certeza que deseja excluir esta pasta?\nTodos os arquivos contidos nesta pasta serão excluídos em cascata.\nEssa ação não pode ser desfeita.')">
                                             <input type="hidden" name="id" value="<?= $folder['id']; ?>">
                                             <button type="submit" class="btn btn-danger btn-sm" data-bs-toggle="tooltip" data-bs-title="Excluir Esta Pasta"><i class="fa-solid fa-trash"></i></button>
                                         </form>
@@ -106,7 +134,6 @@ $folders = getFolders($conn);
                             <?php endforeach; ?>
                         </tbody>
                     </table>
-
 
                     <div class="row">
                         <div class="col-12 text-end">
@@ -119,13 +146,6 @@ $folders = getFolders($conn);
             </div>
         </div>
     </main>
-
-    <!-- <script>
-        $(document).ready(function() {
-            // Inicializando o DataTable para a tabela com id 'foldersTable'
-            $('#foldersTable').DataTable();
-        });
-    </script> -->
 
     <script>
         $(document).ready(() => {
@@ -144,9 +164,6 @@ $folders = getFolders($conn);
             pageLength: 25, // Exibe 25 linhas por padrão
         });
     </script>
-
-
-
 </body>
 
 </html>
