@@ -128,13 +128,13 @@ $files = getFilesWithFolders($conn);
                     <div class="card">
                         <!-- Conteúdo do Card -->
                         <?php if ($isImage): ?>
-                            <img src="<?= htmlspecialchars($file['path']); ?>" alt="<?= htmlspecialchars($file['filename']); ?>" />
+                            <img src="<?= htmlspecialchars($file['path']); ?>" class="card-img-top img-fluid" style="object-fit: cover; height: 200px;" alt="<?= htmlspecialchars($file['filename']); ?>" />
                         <?php else: ?>
                             <i class="fas fa-file-alt"></i>
                         <?php endif; ?>
 
                         <!-- Rodapé do Card com Botões -->
-                        <div class="card-footer">
+                        <div class="card-footer bg-dark">
                             <a href="view-file.php?id=<?= $file['file_id']; ?>" class="btn btn-success btn-sm" data-bs-toggle="tooltip" title="Visualizar">
                                 <i class="fa-solid fa-eye"></i>
                             </a>
