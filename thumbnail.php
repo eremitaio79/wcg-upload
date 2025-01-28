@@ -51,42 +51,33 @@ $files = getFilesWithFolders($conn);
             justify-content: space-between;
             width: 100%;
             height: 250px;
-            /* Altura fixa para os cards */
             background-color: #f0f0f0;
             border: 1px solid #ddd;
             border-radius: 8px;
             overflow: hidden;
-            /* Garante que nada ultrapasse os limites do card */
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            cursor: pointer;
+        }
+
+        .card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
 
         .card img {
             width: 100%;
             height: auto;
             object-fit: cover;
-            /* Faz a imagem cobrir proporcionalmente o espaço */
             flex-shrink: 0;
-            /* Evita que a imagem seja reduzida */
             max-height: calc(100% - 50px);
-            /* Limita a altura da imagem para não invadir o footer */
         }
 
         .card-footer {
             height: 50px;
-            /* Altura fixa para o footer */
             background-color: #fff;
             border-top: 1px solid #ddd;
             display: flex;
             justify-content: space-around;
-            align-items: center;
-        }
-
-
-        .card i {
-            font-size: 48px;
-            color: #888;
-            flex: 1;
-            display: flex;
-            justify-content: center;
             align-items: center;
         }
 
@@ -101,7 +92,6 @@ $files = getFilesWithFolders($conn);
             justify-content: center;
         }
     </style>
-
 </head>
 
 <body>
@@ -125,22 +115,26 @@ $files = getFilesWithFolders($conn);
                     <?php
                     $isImage = preg_match('/\.(jpg|jpeg|png|gif|bmp|webp)$/i', $file['filename']);
                     ?>
-                    <div class="card">
+                    <div class="card"
+                        onclick="<?= $isImage ? "openImageModal('" . htmlspecialchars($file['path']) . "')" : "openDocument('" . htmlspecialchars($file['path']) . "')" ?>"
+                        data-bs-toggle="tooltip" data-bs-html="true" title="<?= htmlspecialchars($file['filename']); ?><br />Pasta: <?= htmlspecialchars($file['folder_name']); ?>">
                         <!-- Conteúdo do Card -->
                         <?php if ($isImage): ?>
                             <img src="<?= htmlspecialchars($file['path']); ?>" class="card-img-top img-fluid" style="object-fit: cover; height: 200px;" alt="<?= htmlspecialchars($file['filename']); ?>" />
                         <?php else: ?>
-                            <i class="fas fa-file-alt"></i>
+                            <i class="fas fa-file-alt fa-5x" style="display: flex; justify-content: center; align-items: center; height: 100px; margin-top: 50px;"></i>
                         <?php endif; ?>
 
                         <!-- Rodapé do Card com Botões -->
-                        <div class="card-footer bg-dark">
+                        <div class="card-footer bg-dark" onclick="event.stopPropagation();">
                             <a href="view-file.php?id=<?= $file['file_id']; ?>" class="btn btn-success btn-sm" data-bs-toggle="tooltip" title="Visualizar">
                                 <i class="fa-solid fa-eye"></i>
                             </a>
-                            <a href="edit-file.php?id=<?= $file['file_id']; ?>" class="btn btn-warning btn-sm" data-bs-toggle="tooltip" title="Editar">
-                                <i class="fa-solid fa-pen-to-square"></i>
-                            </a>
+                            <?php if ($isImage): ?>
+                                <a href="edit-file.php?id=<?= $file['file_id']; ?>" class="btn btn-warning btn-sm" data-bs-toggle="tooltip" title="Editar">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                </a>
+                            <?php endif; ?>
                             <form action="delete-file.php" method="POST" style="display:inline;" onsubmit="return confirm('Tem certeza que deseja excluir este arquivo?')">
                                 <input type="hidden" name="id" value="<?= $file['file_id']; ?>">
                                 <button type="submit" class="btn btn-danger btn-sm" data-bs-toggle="tooltip" title="Excluir">
@@ -148,9 +142,11 @@ $files = getFilesWithFolders($conn);
                                 </button>
                             </form>
                         </div>
+
                     </div>
                 <?php endforeach; ?>
             </div>
+
 
             <!-- Paginação -->
             <div class="pagination-container">
@@ -166,6 +162,38 @@ $files = getFilesWithFolders($conn);
             </div>
         <?php endif; ?>
     </main>
+
+    <script>
+        function openImageModal(imagePath) {
+            const modalHtml = `
+                <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="imageModalLabel">Visualização de Imagem</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <img src="${imagePath}" class="img-fluid" alt="Imagem">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.body.insertAdjacentHTML('beforeend', modalHtml);
+            const modal = new bootstrap.Modal(document.getElementById('imageModal'));
+            modal.show();
+
+            document.getElementById('imageModal').addEventListener('hidden.bs.modal', function() {
+                this.remove();
+            });
+        }
+
+        function openDocument(docPath) {
+            window.open(docPath, '_blank');
+        }
+    </script>
 </body>
 
 </html>
