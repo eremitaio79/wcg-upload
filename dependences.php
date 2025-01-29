@@ -1,5 +1,6 @@
 <?php
-$dir_level = "./wcg-upload/";
+// $dir_level = "./wcg-upload/";
+$dir_level = "./";
 ?>
 
 <!-- JQuery 3.7.1 -->
