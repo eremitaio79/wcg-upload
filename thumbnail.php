@@ -25,6 +25,16 @@ function getFilesWithFolders($conn)
 }
 
 $files = getFilesWithFolders($conn);
+
+// Paginação
+$itemsPerPage = 60;
+$totalItems = count($files);
+$totalPages = ceil($totalItems / $itemsPerPage);
+$currentPage = isset($_GET['page']) ? max(1, min($totalPages, intval($_GET['page']))) : 1;
+
+// Determinar o índice de início e fim
+$startIndex = ($currentPage - 1) * $itemsPerPage;
+$paginatedFiles = array_slice($files, $startIndex, $itemsPerPage);
 ?>
 
 <!DOCTYPE html>
@@ -111,7 +121,7 @@ $files = getFilesWithFolders($conn);
         <?php else: ?>
             <!-- Contêiner de cards -->
             <div class="card-container">
-                <?php foreach ($files as $file): ?>
+                <?php foreach ($paginatedFiles as $file): ?>
                     <?php
                     $isImage = preg_match('/\.(jpg|jpeg|png|gif|bmp|webp)$/i', $file['filename']);
                     ?>
@@ -147,16 +157,21 @@ $files = getFilesWithFolders($conn);
                 <?php endforeach; ?>
             </div>
 
-
             <!-- Paginação -->
             <div class="pagination-container">
                 <nav>
                     <ul class="pagination">
-                        <li class="page-item"><a class="page-link" href="#">Anterior</a></li>
-                        <li class="page-item"><a class="page-link" href="#">1</a></li>
-                        <li class="page-item"><a class="page-link" href="#">2</a></li>
-                        <li class="page-item"><a class="page-link" href="#">3</a></li>
-                        <li class="page-item"><a class="page-link" href="#">Próximo</a></li>
+                        <li class="page-item <?= $currentPage == 1 ? 'disabled' : ''; ?>">
+                            <a class="page-link" href="?page=<?= $currentPage - 1; ?>">Anterior</a>
+                        </li>
+                        <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                            <li class="page-item <?= $i == $currentPage ? 'active' : ''; ?>">
+                                <a class="page-link" href="?page=<?= $i; ?>"><?= $i; ?></a>
+                            </li>
+                        <?php endfor; ?>
+                        <li class="page-item <?= $currentPage == $totalPages ? 'disabled' : ''; ?>">
+                            <a class="page-link" href="?page=<?= $currentPage + 1; ?>">Próximo</a>
+                        </li>
                     </ul>
                 </nav>
             </div>
@@ -194,6 +209,7 @@ $files = getFilesWithFolders($conn);
             window.open(docPath, '_blank');
         }
     </script>
+
 </body>
 
 </html>

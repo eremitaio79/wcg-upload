@@ -16,7 +16,7 @@
 
             <div class="btn-group me-3">
                 <a href="./thumbnail.php" target="_self" class="btn btn-secondary" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Visualização em Miniaturas"><i class="fa-solid fa-image"></i></a>
-                <a href="./index.php" target="_self" class="btn btn-secondary" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Visualização em Lista"><i class="fa-solid fa-list"></i></a>
+                <a href="./list.php" target="_self" class="btn btn-secondary" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Visualização em Lista"><i class="fa-solid fa-list"></i></a>
             </div>
 
             <div class="btn-group">
