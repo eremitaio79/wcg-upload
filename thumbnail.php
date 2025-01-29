@@ -131,8 +131,8 @@ $paginatedFiles = array_slice($files, $startIndex, $itemsPerPage);
                     data-bs-html="true" 
                     title="<?= htmlspecialchars($file['filename']); ?><br />Pasta: <?= htmlspecialchars($file['folder_name']); ?>">
                                 
-                    <?php if ($isImage): ?>
-                        <img src="<?= htmlspecialchars($file['path']); ?>" 
+                    <?php if ($isImage): ?>    
+                        <img src="./files/img/<?= htmlspecialchars($file['folder_name']); ?>/<?= htmlspecialchars($file['filename']); ?>" 
                              class="card-img-top img-fluid" 
                              style="object-fit: cover; height: 200px;" 
                              alt="<?= htmlspecialchars($file['filename']); ?>" />

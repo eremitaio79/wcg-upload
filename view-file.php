@@ -16,7 +16,11 @@ if (!$file) {
 }
 
 // Transforme o caminho absoluto em um URL acessível publicamente
-$file_url = URL_SISTEMA . ltrim($file['path'], '/');
+$file_path = str_replace('./wcg-upload/', '', $file['path']);
+$file_url = URL_SISTEMA . ltrim($file_path, '/');
+
+// echo "<p><p><p><p><p><p><p><p><p><p>Original: {$file['path']}</p>";
+// echo "<p>Corrigido: {$file_url}</p>";
 
 // Determina o tipo de arquivo
 $file_extension = strtolower(pathinfo($file['filename'], PATHINFO_EXTENSION));
@@ -61,7 +65,13 @@ $is_image = in_array($file_extension, ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp
         <div class="row">
             <div class="col-12">
                 <div class="file-container">
-                    <h3>Visualizando: <?= htmlspecialchars($file['filename']); ?></h3>
+                    <div class="row">
+                        <div class="col-12">
+                            <a href="./thumbnail.php" target="_self" class="btn btn-primary">Voltar</a>
+                            <hr />
+                        </div>
+                    </div>
+                    <h4>Arquivo: <?= htmlspecialchars($file['filename']); ?></h4>
 
                     <?php if ($is_image): ?>
                         <!-- Exibe a imagem -->
@@ -71,6 +81,13 @@ $is_image = in_array($file_extension, ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp
                         <p>O arquivo não pode ser exibido diretamente no navegador. Use o link abaixo para acessar:</p>
                         <a href="<?= $file_url; ?>" target="_blank" class="btn btn-primary">Abrir Arquivo</a>
                     <?php endif; ?>
+
+                    <div class="row">
+                        <div class="col-12">
+                            <hr />
+                            <a href="./thumbnail.php" target="_self" class="btn btn-primary">Voltar</a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
