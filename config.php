@@ -37,6 +37,15 @@ try {
 // Nível dos diretórios para o arquivo de dependências (dependence.php).
 $dir_level = "./code-projects/wcg-upload/";
 
+// URL padrão do sistema.
+define('URL_SISTEMA', 'http://localhost/codes-project/wcg-upload/');
+
+
+$baseDir = './wcg-upload/';
+
+// Caminho base para os uploads.
+$basePath = './files/';
+
 /** ----------------------------------------------------------------------------------------------------------------- */
 
 // Parametrizações do sistema.
@@ -45,12 +54,6 @@ define('NAVBAR_TITLE', 'Upload Tool');
 define('SYSTEM_TITLE', 'Upload Tool Para Sites e Sistemas');
 
 /** ----------------------------------------------------------------------------------------------------------------- */
-
-// URL padrão do sistema.
-define('URL_SISTEMA', 'http://localhost/codes-project/wcg-upload/');
-
-// Caminho base para os uploads.
-$basePath = './files/';
 
 /**
  * Visualização padrão quando o sistema é carregado.

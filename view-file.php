@@ -16,7 +16,7 @@ if (!$file) {
 }
 
 // Transforme o caminho absoluto em um URL acessível publicamente
-$file_path = str_replace('./wcg-upload/', '', $file['path']);
+$file_path = str_replace($baseDir, '', $file['path']);
 $file_url = URL_SISTEMA . ltrim($file_path, '/');
 
 // echo "<p><p><p><p><p><p><p><p><p><p>Original: {$file['path']}</p>";
