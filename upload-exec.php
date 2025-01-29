@@ -68,6 +68,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         }
                     }
 
+                    $relativePath = './wcg-upload/' . ltrim($targetFile, './'); // Adiciona o prefixo corretamente
+
                     $stmt = $conn->prepare("
                         INSERT INTO wcg_upload_files (id_dir, filename, path, type, dimensions, status, created_at) 
                         VALUES (:id_dir, :filename, :path, :type, :dimensions, :status, NOW())
@@ -75,7 +77,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     $stmt->execute([
                         ':id_dir' => $folderId,
                         ':filename' => $sanitizedFileName,
-                        ':path' => $targetFile,
+                        ':path' => $relativePath,
                         ':type' => $fileType,
                         ':dimensions' => $dimensions,
                         ':status' => 1
@@ -92,6 +94,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 
     // Redireciona para index.php após o upload
-    header("Location: index.php");
+    header("Location: thumbnail.php");
     exit;
 }
