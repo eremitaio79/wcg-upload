@@ -47,7 +47,7 @@ $is_image = in_array($file_extension, ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp
 
         .file-container a {
             text-decoration: none;
-            color: #007bff;
+            /* color: #007bff; */
         }
     </style>
 </head>
