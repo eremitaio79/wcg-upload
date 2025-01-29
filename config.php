@@ -34,6 +34,11 @@ try {
 
 /** ----------------------------------------------------------------------------------------------------------------- */
 
+// Nível dos diretórios para o arquivo de dependências (dependence.php).
+$dir_level = "./code-projects/wcg-upload/";
+
+/** ----------------------------------------------------------------------------------------------------------------- */
+
 // Parametrizações do sistema.
 
 define('NAVBAR_TITLE', 'Upload Tool');
