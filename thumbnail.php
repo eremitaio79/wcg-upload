@@ -1,11 +1,11 @@
 <?php
 session_start();
-include_once "./config.php";
+include_once './config.php';
 
 // Função para buscar arquivos e pastas associadas
 function getFilesWithFolders($conn)
 {
-    $query = "
+    $query = '
         SELECT 
             f.id AS file_id,
             f.filename,
@@ -18,7 +18,7 @@ function getFilesWithFolders($conn)
             wcg_upload_dir d 
         ON 
             f.id_dir = d.id
-    ";
+    ';
     $stmt = $conn->prepare($query);
     $stmt->execute();
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -46,7 +46,7 @@ $paginatedFiles = array_slice($files, $startIndex, $itemsPerPage);
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title><?= SYSTEM_TITLE; ?></title>
 
-    <?php include_once "./dependences.php"; ?>
+    <?php include_once './dependences.php'; ?>
 
     <style>
         .card-container {
@@ -106,7 +106,7 @@ $paginatedFiles = array_slice($files, $startIndex, $itemsPerPage);
 
 <body>
     <header>
-        <?php include_once "./layout/navbar.php"; ?>
+        <?php include_once './layout/navbar.php'; ?>
     </header>
 
     <main class="container my-5">
@@ -126,14 +126,20 @@ $paginatedFiles = array_slice($files, $startIndex, $itemsPerPage);
                     $isImage = preg_match('/\.(jpg|jpeg|png|gif|bmp|webp)$/i', $file['filename']);
                     ?>
                     <div class="card"
-                        onclick="<?= $isImage ? "openImageModal('" . htmlspecialchars($file['path']) . "')" : "openDocument('" . htmlspecialchars($file['path']) . "')" ?>"
-                        data-bs-toggle="tooltip" data-bs-html="true" title="<?= htmlspecialchars($file['filename']); ?><br />Pasta: <?= htmlspecialchars($file['folder_name']); ?>">
-                        <!-- Conteúdo do Card -->
-                        <?php if ($isImage): ?>
-                            <img src="<?= htmlspecialchars($file['path']); ?>" class="card-img-top img-fluid" style="object-fit: cover; height: 200px;" alt="<?= htmlspecialchars($file['filename']); ?>" />
-                        <?php else: ?>
-                            <i class="fas fa-file-alt fa-5x" style="display: flex; justify-content: center; align-items: center; height: 100px; margin-top: 50px;"></i>
-                        <?php endif; ?>
+                    onclick="selectImage('<?= htmlspecialchars($file['path']); ?>')"
+                    data-bs-toggle="tooltip" 
+                    data-bs-html="true" 
+                    title="<?= htmlspecialchars($file['filename']); ?><br />Pasta: <?= htmlspecialchars($file['folder_name']); ?>">
+                                
+                    <?php if ($isImage): ?>
+                        <img src="<?= htmlspecialchars($file['path']); ?>" 
+                             class="card-img-top img-fluid" 
+                             style="object-fit: cover; height: 200px;" 
+                             alt="<?= htmlspecialchars($file['filename']); ?>" />
+                    <?php else: ?>
+                        <i class="fas fa-file-alt fa-5x" 
+                           style="display: flex; justify-content: center; align-items: center; height: 100px; margin-top: 50px;"></i>
+                    <?php endif; ?>
 
                         <!-- Rodapé do Card com Botões -->
                         <div class="card-footer bg-dark" onclick="event.stopPropagation();">
@@ -207,6 +213,31 @@ $paginatedFiles = array_slice($files, $startIndex, $itemsPerPage);
 
         function openDocument(docPath) {
             window.open(docPath, '_blank');
+        }
+
+        function selectImage(imagePath) {
+            var funcNum = getUrlParam('CKEditorFuncNum');
+            window.opener.CKEDITOR.tools.callFunction(funcNum, imagePath);
+            window.close();
+        }
+
+        function getUrlParam(paramName) {
+            var reParam = new RegExp('(?:[?&]|&)' + paramName + '=([^&]+)', 'i');
+            var match = window.location.search.match(reParam);
+            return (match && match.length > 1) ? match[1] : null;
+        }
+
+        function selectImage(url) {
+            var funcNum = getUrlParam('CKEditorFuncNum');
+            window.opener.CKEDITOR.tools.callFunction(funcNum, url);
+            window.close();
+        }
+
+        // Função para obter parâmetros da URL
+        function getUrlParam(paramName) {
+            var reParam = new RegExp('(?:[?&]|&)' + paramName + '=([^&]+)', 'i');
+            var match = window.location.search.match(reParam);
+            return (match && match.length > 1) ? match[1] : null;
         }
     </script>
 
