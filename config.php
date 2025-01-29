@@ -46,3 +46,11 @@ define('URL_SISTEMA', 'http://localhost/codes-project/wcg-upload/');
 
 // Caminho base para os uploads.
 $basePath = './files/';
+
+/**
+ * Visualização padrão quando o sistema é carregado.
+ * 1 = Thumbnail
+ * 2 = List
+ */
+define('DEFAULT_PAGE_VIEW', 1);
+// define('DEFAULT_PAGE_VIEW', 2);
