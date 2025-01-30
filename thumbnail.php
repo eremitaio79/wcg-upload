@@ -2,6 +2,13 @@
 session_start();
 include_once './config.php';
 
+// Captura os parâmetros do CKEditor
+$ckeditorParams = http_build_query([
+    'CKEditor' => $_GET['CKEditor'] ?? '',
+    'CKEditorFuncNum' => $_GET['CKEditorFuncNum'] ?? '',
+    'langCode' => $_GET['langCode'] ?? '',
+]);
+
 // Função para buscar arquivos e pastas associadas
 function getFilesWithFolders($conn)
 {
@@ -27,7 +34,7 @@ function getFilesWithFolders($conn)
 $files = getFilesWithFolders($conn);
 
 // Paginação
-$itemsPerPage = 60;
+$itemsPerPage = 24;
 $totalItems = count($files);
 $totalPages = ceil($totalItems / $itemsPerPage);
 $currentPage = isset($_GET['page']) ? max(1, min($totalPages, intval($_GET['page']))) : 1;
@@ -126,37 +133,39 @@ $paginatedFiles = array_slice($files, $startIndex, $itemsPerPage);
                     $isImage = preg_match('/\.(jpg|jpeg|png|gif|bmp|webp)$/i', $file['filename']);
                     ?>
                     <div class="card"
-                    onclick="selectImage('<?= htmlspecialchars($file['path']); ?>')"
-                    data-bs-toggle="tooltip" 
-                    data-bs-html="true" 
-                    title="<?= htmlspecialchars($file['filename']); ?><br />Pasta: <?= htmlspecialchars($file['folder_name']); ?>">
-                                
-                    <?php if ($isImage): ?>    
-                        <img src="./files/img/<?= htmlspecialchars($file['folder_name']); ?>/<?= htmlspecialchars($file['filename']); ?>" 
-                             class="card-img-top img-fluid" 
-                             style="object-fit: cover; height: 200px;" 
-                             alt="<?= htmlspecialchars($file['filename']); ?>" />
-                    <?php else: ?>
-                        <i class="fas fa-file-alt fa-5x" 
-                           style="display: flex; justify-content: center; align-items: center; height: 100px; margin-top: 50px;"></i>
-                    <?php endif; ?>
+                        onclick="selectImage('<?= htmlspecialchars($file['path']); ?>')"
+                        data-bs-toggle="tooltip"
+                        data-bs-html="true"
+                        title="<?= htmlspecialchars($file['filename']); ?><br />Pasta: <?= htmlspecialchars($file['folder_name']); ?>">
+
+                        <?php if ($isImage): ?>
+                            <img src="./files/img/<?= htmlspecialchars($file['folder_name']); ?>/<?= htmlspecialchars($file['filename']); ?>"
+                                class="card-img-top img-fluid"
+                                style="object-fit: cover; height: 200px;"
+                                alt="<?= htmlspecialchars($file['filename']); ?>" />
+                        <?php else: ?>
+                            <i class="fas fa-file-alt fa-5x"
+                                style="display: flex; justify-content: center; align-items: center; height: 100px; margin-top: 50px;"></i>
+                        <?php endif; ?>
 
                         <!-- Rodapé do Card com Botões -->
                         <div class="card-footer bg-dark" onclick="event.stopPropagation();">
-                            <a href="view-file.php?id=<?= $file['file_id']; ?>" class="btn btn-success btn-sm" data-bs-toggle="tooltip" title="Visualizar">
+                            <a href="view-file.php?id=<?= $file['file_id']; ?>&<?= $ckeditorParams ?>" class="btn btn-success btn-sm" data-bs-toggle="tooltip" title="Visualizar">
                                 <i class="fa-solid fa-eye"></i>
                             </a>
                             <?php if ($isImage): ?>
-                                <a href="edit-file.php?id=<?= $file['file_id']; ?>" class="btn btn-warning btn-sm" data-bs-toggle="tooltip" title="Editar">
+                                <a href="edit-file.php?id=<?= $file['file_id']; ?>&<?= $ckeditorParams ?>" class="btn btn-warning btn-sm" data-bs-toggle="tooltip" title="Editar">
                                     <i class="fa-solid fa-pen-to-square"></i>
                                 </a>
                             <?php endif; ?>
                             <form action="delete-file.php" method="POST" style="display:inline;" onsubmit="return confirm('Tem certeza que deseja excluir este arquivo?')">
                                 <input type="hidden" name="id" value="<?= $file['file_id']; ?>">
+                                <input type="hidden" name="ckedit" value="<?= $ckeditorParams; ?>">
                                 <button type="submit" class="btn btn-danger btn-sm" data-bs-toggle="tooltip" title="Excluir">
                                     <i class="fa-solid fa-trash"></i>
                                 </button>
                             </form>
+
                         </div>
 
                     </div>
@@ -168,15 +177,15 @@ $paginatedFiles = array_slice($files, $startIndex, $itemsPerPage);
                 <nav>
                     <ul class="pagination">
                         <li class="page-item <?= $currentPage == 1 ? 'disabled' : ''; ?>">
-                            <a class="page-link" href="?page=<?= $currentPage - 1; ?>">Anterior</a>
+                            <a class="page-link" href="?page=<?= $currentPage - 1; ?>&<?= $ckeditorParams ?>">Anterior</a>
                         </li>
                         <?php for ($i = 1; $i <= $totalPages; $i++): ?>
                             <li class="page-item <?= $i == $currentPage ? 'active' : ''; ?>">
-                                <a class="page-link" href="?page=<?= $i; ?>"><?= $i; ?></a>
+                                <a class="page-link" href="?page=<?= $i; ?>&<?= $ckeditorParams ?>"><?= $i; ?></a>
                             </li>
                         <?php endfor; ?>
                         <li class="page-item <?= $currentPage == $totalPages ? 'disabled' : ''; ?>">
-                            <a class="page-link" href="?page=<?= $currentPage + 1; ?>">Próximo</a>
+                            <a class="page-link" href="?page=<?= $currentPage + 1; ?>&<?= $ckeditorParams ?>">Próximo</a>
                         </li>
                     </ul>
                 </nav>

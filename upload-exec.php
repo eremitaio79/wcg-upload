@@ -1,6 +1,13 @@
 <?php
 include_once './config.php';
 
+// Captura os parâmetros do CKEditor
+$ckeditorParams = http_build_query([
+    'CKEditor' => $_GET['CKEditor'] ?? '',
+    'CKEditorFuncNum' => $_GET['CKEditorFuncNum'] ?? '',
+    'langCode' => $_GET['langCode'] ?? '',
+]);
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $folderId = $_POST['folder_id'] ?? null;
 
@@ -94,6 +101,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 
     // Redireciona para index.php após o upload
-    header("Location: thumbnail.php");
+    // header("Location: thumbnail.php");
+    header("Location: thumbnail.php?$ckeditorParams");
     exit;
 }

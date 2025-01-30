@@ -39,6 +39,7 @@ $dir_level = "./code-projects/wcg-upload/";
 
 // URL padrão do sistema.
 define('URL_SISTEMA', 'http://localhost/codes-project/wcg-upload/');
+define('URL_SISTEMA2', 'http://localhost/codes-project/');
 
 
 $baseDir = './wcg-upload/';

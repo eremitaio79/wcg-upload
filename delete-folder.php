@@ -2,6 +2,13 @@
 include_once "./config.php";
 session_start();
 
+// Captura os parâmetros do CKEditor
+$ckeditorParams = http_build_query([
+    'CKEditor' => $_GET['CKEditor'] ?? '',
+    'CKEditorFuncNum' => $_GET['CKEditorFuncNum'] ?? '',
+    'langCode' => $_GET['langCode'] ?? '',
+]);
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $id = $_POST['id'];
 
@@ -64,10 +71,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // Redireciona para a página de gerenciamento de diretórios
-    header("Location: manage-dir.php");
+    header("Location: manage-dir.php?$ckeditorParams");
     exit();
 } else {
     $_SESSION['message'] = "Método de requisição inválido.";
-    header("Location: manage-dir.php");
+    header("Location: manage-dir.php?$ckeditorParams");
     exit();
 }

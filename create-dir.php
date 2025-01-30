@@ -1,6 +1,13 @@
 <?php
 session_start();
 
+// Captura os parâmetros do CKEditor
+$ckeditorParams = http_build_query([
+    'CKEditor' => $_GET['CKEditor'] ?? '',
+    'CKEditorFuncNum' => $_GET['CKEditorFuncNum'] ?? '',
+    'langCode' => $_GET['langCode'] ?? '',
+]);
+
 include_once "./config.php";
 ?>
 
@@ -62,7 +69,7 @@ include_once "./config.php";
                 </script>
 
                 <!-- Formulário de Criação de Pasta -->
-                <form action="create-dir-exec.php" method="POST">
+                <form action="create-dir-exec.php?<?= $ckeditorParams ?>" method="POST">
                     <div class="mb-3">
                         <label for="folderName" class="form-label">Nome da nova pasta</label>
                         <input type="text" class="form-control" id="folderName" name="folderName" required>
@@ -81,7 +88,7 @@ include_once "./config.php";
                     <div class="row">
                         <div class="col-12 text-end">
                             <button type="submit" class="btn btn-primary">Criar Pasta</button>
-                            <a href="./index.php" target="_self" type="button" class="btn btn-secondary">Cancelar</a>
+                            <a href="./index.php?<?= $ckeditorParams ?>" target="_self" type="button" class="btn btn-secondary">Cancelar</a>
                         </div>
                     </div>
                 </form>

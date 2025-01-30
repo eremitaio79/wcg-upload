@@ -2,12 +2,20 @@
 session_start();
 include_once "./config.php";
 
+// Captura os parâmetros do CKEditor
+$ckeditorParams = http_build_query([
+    'CKEditor' => $_GET['CKEditor'] ?? '',
+    'CKEditorFuncNum' => $_GET['CKEditorFuncNum'] ?? '',
+    'langCode' => $_GET['langCode'] ?? '',
+]);
+
+
 // Redirecionamento antes de qualquer saída
 if (DEFAULT_PAGE_VIEW == 1) {
-    header("Location: thumbnail.php");
+    header("Location: thumbnail.php?$ckeditorParams");
     exit();
 } elseif (DEFAULT_PAGE_VIEW == 2) {
-    header("Location: list.php");
+    header("Location: list.php?$ckeditorParams");
     exit();
 }
 ?>

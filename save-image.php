@@ -1,6 +1,12 @@
 <?php
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Obtém os dados enviados
     $data = json_decode(file_get_contents('php://input'), true);
+
+    // Verifique o que foi enviado
+    var_dump($data); // Depuração: Exibe o que foi enviado
+    die(); // Para a execução para não continuar no código
+
     $image = $data['image'];
     $path = $data['path'];
 

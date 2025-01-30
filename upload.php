@@ -1,6 +1,13 @@
 <?php
 include_once "./config.php";
 
+// Captura os parâmetros do CKEditor
+$ckeditorParams = http_build_query([
+    'CKEditor' => $_GET['CKEditor'] ?? '',
+    'CKEditorFuncNum' => $_GET['CKEditorFuncNum'] ?? '',
+    'langCode' => $_GET['langCode'] ?? '',
+]);
+
 // Obter as pastas com status=1
 $stmt = $conn->prepare("SELECT id, dir_name, path FROM wcg_upload_dir WHERE status = 1");
 $stmt->execute();
@@ -29,7 +36,7 @@ $folders = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     <div class="container mt-5">
         <h2 class="mb-4">Upload de Arquivos</h2>
-        <form action="upload-exec.php" method="POST" enctype="multipart/form-data">
+        <form action="upload-exec.php?<?= $ckeditorParams ?>" method="POST" enctype="multipart/form-data">
             <div class="row mb-3">
                 <!-- Select de Pastas -->
                 <div class="col-md-4">
@@ -51,6 +58,7 @@ $folders = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <small class="text-muted">Tipos permitidos: Imagens (JPG, PNG, GIF, CDR, PSD) e Documentos (PDF, DOC, DOCX, XLS, XLSX, TXT, ZIP, RAR).</small>
             </div>
             <button type="submit" class="btn btn-primary">Fazer Upload</button>
+            <a href="./thumbnail.php?<?= $ckeditorParams ?>" target="_self" class="btn btn-secondary">Cancelar</a>
         </form>
     </div>
 

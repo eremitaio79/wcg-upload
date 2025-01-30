@@ -3,6 +3,13 @@
 // Incluir a configuração e a conexão com o banco de dados
 include_once "./config.php";
 
+// Captura os parâmetros do CKEditor
+$ckeditorParams = http_build_query([
+    'CKEditor' => $_GET['CKEditor'] ?? '',
+    'CKEditorFuncNum' => $_GET['CKEditorFuncNum'] ?? '',
+    'langCode' => $_GET['langCode'] ?? '',
+]);
+
 // Função para limpar o nome da pasta (remove espaços, caracteres especiais, coloca tudo em minúsculas e substitui espaços por underscores)
 function cleanFolderName($folderName)
 {
@@ -86,20 +93,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             // Redireciona para index.php com a mensagem de sucesso
             session_start();
             $_SESSION['message'] = "Pasta criada com sucesso!";
-            header("Location: manage-dir.php");
+            header("Location: manage-dir.php?$ckeditorParams");
             exit();
         } else {
             // Caso não consiga inserir no banco de dados
             session_start();
             $_SESSION['message'] = "Erro ao registrar a pasta no banco de dados.";
-            header("Location: manage-dir.php");
+            header("Location: manage-dir.php?$ckeditorParams");
             exit();
         }
     } else {
         // Se houve erro ao criar a pasta ou se já existe
         session_start();
         $_SESSION['message'] = $message; // Mensagem de erro
-        header("Location: create-dir.php"); // Redireciona de volta para create-dir.php
+        header("Location: create-dir.php?$ckeditorParams"); // Redireciona de volta para create-dir.php
         exit();
     }
 }
