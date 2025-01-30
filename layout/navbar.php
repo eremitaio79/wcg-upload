@@ -1,3 +1,12 @@
+<?php
+// Captura os parâmetros do CKEditor
+$ckeditorParams = http_build_query([
+    'CKEditor' => $_GET['CKEditor'] ?? '',
+    'CKEditorFuncNum' => $_GET['CKEditorFuncNum'] ?? '',
+    'langCode' => $_GET['langCode'] ?? '',
+]);
+?>
+
 <!-- <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top"> -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
     <div class="container-fluid">
@@ -10,21 +19,21 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav me-auto">
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="./index.php" target="_self">Home</a>
+                    <a class="nav-link active" aria-current="page" href="./index.php?<?= $ckeditorParams ?>" target="_self">Home</a>
                 </li>
             </ul>
 
             <div class="btn-group me-3">
-                <a href="./thumbnail.php" target="_self" class="btn btn-secondary" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Visualização em Miniaturas"><i class="fa-solid fa-image"></i></a>
-                <a href="./list.php" target="_self" class="btn btn-secondary" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Visualização em Lista"><i class="fa-solid fa-list"></i></a>
+                <a href="./thumbnail.php?<?= $ckeditorParams ?>" target="_self" class="btn btn-secondary" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Visualização em Miniaturas"><i class="fa-solid fa-image"></i></a>
+                <a href="./list.php?<?= $ckeditorParams ?>" target="_self" class="btn btn-secondary" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Visualização em Lista"><i class="fa-solid fa-list"></i></a>
             </div>
 
             <div class="btn-group">
-                <a href="./upload.php" target="_self" class="btn btn-primary" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Fazer Novo Upload">
+                <a href="./upload.php?<?= $ckeditorParams ?>" target="_self" class="btn btn-primary" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Fazer Novo Upload">
                     <i class="fa-solid fa-image"></i>&nbsp;Upload
                 </a>
-                <a href="./create-dir.php" target="_self" class="btn btn-success" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Criar Nova Pasta"><i class="fa-solid fa-folder-plus"></i></a>
-                <a href="./manage-dir.php" target="_self" class="btn btn-secondary" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Gerenciador de Pastas"><i class="fa-solid fa-folder-tree"></i></a>
+                <a href="./create-dir.php?<?= $ckeditorParams ?>" target="_self" class="btn btn-success" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Criar Nova Pasta"><i class="fa-solid fa-folder-plus"></i></a>
+                <a href="./manage-dir.php?<?= $ckeditorParams ?>" target="_self" class="btn btn-secondary" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Gerenciador de Pastas"><i class="fa-solid fa-folder-tree"></i></a>
             </div>
         </div>
     </div>

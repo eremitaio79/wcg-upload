@@ -1,6 +1,13 @@
 <?php
 include_once "./config.php";
 
+// Captura os parâmetros do CKEditor
+$ckeditorParams = http_build_query([
+    'CKEditor' => $_GET['CKEditor'] ?? '',
+    'CKEditorFuncNum' => $_GET['CKEditorFuncNum'] ?? '',
+    'langCode' => $_GET['langCode'] ?? '',
+]);
+
 // Obtém o ID do arquivo da URL
 $file_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 
@@ -67,7 +74,7 @@ $is_image = in_array($file_extension, ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp
                 <div class="file-container">
                     <div class="row">
                         <div class="col-12">
-                            <a href="./thumbnail.php" target="_self" class="btn btn-primary">Voltar</a>
+                            <a href="./thumbnail.php?<?= $ckeditorParams ?>" target="_self" class="btn btn-primary">Voltar</a>
                             <hr />
                         </div>
                     </div>
@@ -85,7 +92,7 @@ $is_image = in_array($file_extension, ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp
                     <div class="row">
                         <div class="col-12">
                             <hr />
-                            <a href="./thumbnail.php" target="_self" class="btn btn-primary">Voltar</a>
+                            <a href="./thumbnail.php?<?= $ckeditorParams ?>" target="_self" class="btn btn-primary">Voltar</a>
                         </div>
                     </div>
                 </div>

@@ -2,6 +2,13 @@
 include_once "./config.php";
 session_start();
 
+// Captura os parâmetros do CKEditor
+$ckeditorParams = http_build_query([
+    'CKEditor' => $_GET['CKEditor'] ?? '',
+    'CKEditorFuncNum' => $_GET['CKEditorFuncNum'] ?? '',
+    'langCode' => $_GET['langCode'] ?? '',
+]);
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $id = $_POST['id'];
     $newName = trim($_POST['newName']);
@@ -60,7 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $id = $_GET['id'] ?? null;
 if (!$id) {
     $_SESSION['message'] = "ID inválido.";
-    header("Location: manage-dir.php");
+    header("Location: manage-dir.php?<?= $ckeditorParams ?>");
     exit();
 }
 
@@ -72,7 +79,7 @@ $folder = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if (!$folder) {
     $_SESSION['message'] = "Pasta não encontrada.";
-    header("Location: manage-dir.php");
+    header("Location: manage-dir.php?<?= $ckeditorParams ?>");
     exit();
 }
 ?>
@@ -111,6 +118,7 @@ if (!$folder) {
                         </select>
                     </div>
                     <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+                    <a href="./manage-dir.php?<?= $ckeditorParams ?>" target="_self" class="btn btn-secondary">Cancelar</a>
                 </form>
             </div>
         </div>

@@ -2,42 +2,60 @@
 session_start();
 include_once "./config.php";
 
-// Verifica se o ID foi enviado via POST
-if (isset($_POST['id'])) {
-    $file_id = intval($_POST['id']);
+// Captura os dados enviados pelo formulário
+$formDataPost = filter_input_array(INPUT_POST, FILTER_DEFAULT);
+var_dump($formDataPost); // Exibe os dados do formulário para depuração
+extract($formDataPost);
 
-    // Busca informações do arquivo no banco de dados
+// Verifica se o ID foi passado no formulário
+if (isset($id)) {
+    $file_id = intval($id); // Captura o ID do arquivo
+
+    // Busca o caminho do arquivo no banco de dados
     $query = "SELECT path FROM wcg_upload_files WHERE id = :id";
     $stmt = $conn->prepare($query);
     $stmt->bindParam(':id', $file_id, PDO::PARAM_INT);
-    $stmt->execute();
-    $file = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if ($file) {
-        $file_path = $file['path'];
+    if ($stmt->execute()) {
+        $file = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        // Tenta excluir o arquivo físico
-        if (file_exists($file_path) && unlink($file_path)) {
-            // Remove o registro do banco de dados
-            $delete_query = "DELETE FROM wcg_upload_files WHERE id = :id";
-            $delete_stmt = $conn->prepare($delete_query);
-            $delete_stmt->bindParam(':id', $file_id, PDO::PARAM_INT);
+        // Concatena a URL base (URL_SISTEMA2) com o caminho armazenado no banco de dados
+        $file_url = URL_SISTEMA2 . ltrim($file['path'], './');
+        var_dump($file_url); // Exibe a URL para depuração
 
-            if ($delete_stmt->execute()) {
-                $_SESSION['message'] = "Arquivo excluído com sucesso.";
+        // Converte a URL para o caminho físico no servidor
+        // Supondo que URL_SISTEMA2 seja 'http://localhost/codes-project/'
+        // Vamos substituir 'http://localhost' pela raiz do servidor no DOCUMENT_ROOT
+        $file_completo = str_replace('http://localhost', $_SERVER['DOCUMENT_ROOT'], $file_url);
+        var_dump($file_completo); // Exibe o caminho físico completo do arquivo
+
+        // Verifica se o arquivo físico existe
+        if (file_exists($file_completo)) {
+            // Tenta excluir o arquivo físico
+            if (unlink($file_completo)) {
+                // Exclui o registro no banco de dados
+                $queryDel = "DELETE FROM wcg_upload_files WHERE id = :id LIMIT 1";
+                $returnDel = $conn->prepare($queryDel);
+                $returnDel->bindParam(':id', $file_id, PDO::PARAM_INT);
+
+                if ($returnDel->execute()) {
+                    $_SESSION['message'] = "Arquivo excluído com sucesso.";
+                } else {
+                    $_SESSION['message'] = "Erro ao excluir o registro do arquivo no banco de dados.";
+                }
             } else {
-                $_SESSION['message'] = "Erro ao excluir o registro do arquivo no banco de dados.";
+                $_SESSION['message'] = "Erro ao excluir o arquivo físico. Verifique as permissões de acesso.";
             }
         } else {
-            $_SESSION['message'] = "Erro ao excluir o arquivo físico. Verifique se o arquivo existe e as permissões de acesso.";
+            $_SESSION['message'] = "Arquivo físico não encontrado: " . $file_completo;
         }
     } else {
-        $_SESSION['message'] = "Arquivo não encontrado.";
+        $_SESSION['message'] = "Erro ao buscar o arquivo no banco de dados.";
     }
 } else {
     $_SESSION['message'] = "ID do arquivo não fornecido.";
 }
 
-// Redireciona para a página principal
-header("Location: index.php");
+// Redireciona para a página principal ou de gerenciamento de arquivos
+header("Location: index.php?$ckedit");
 exit;

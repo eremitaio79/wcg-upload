@@ -2,6 +2,13 @@
 session_start();
 include_once "./config.php";
 
+// Captura os parâmetros do CKEditor
+$ckeditorParams = http_build_query([
+    'CKEditor' => $_GET['CKEditor'] ?? '',
+    'CKEditorFuncNum' => $_GET['CKEditorFuncNum'] ?? '',
+    'langCode' => $_GET['langCode'] ?? '',
+]);
+
 // Função para buscar arquivos e pastas associadas
 function getFilesWithFolders($conn)
 {
@@ -176,11 +183,14 @@ $files = getFilesWithFolders($conn);
                                         <?= $file['file_status'] == 1 ? 'Ativo' : 'Inativo'; ?>
                                     </td>
                                     <td class="text-center">
-                                        <a href="view-file.php?id=<?= $file['file_id']; ?>" class="btn btn-success btn-sm" data-bs-toggle="tooltip" title="Visualizar"><i class="fa-solid fa-eye"></i></a>
-                                        <a href="edit-file.php?id=<?= $file['file_id']; ?>" class="btn btn-warning btn-sm" data-bs-toggle="tooltip" title="Editar"><i class="fa-solid fa-pen-to-square"></i></a>
+                                        <a href="view-file.php?id=<?= $file['file_id']; ?>&<?= $ckeditorParams ?>" class="btn btn-success btn-sm" data-bs-toggle="tooltip" title="Visualizar"><i class="fa-solid fa-eye"></i></a>
+                                        <a href="edit-file.php?id=<?= $file['file_id']; ?>&<?= $ckeditorParams ?>" class="btn btn-warning btn-sm" data-bs-toggle="tooltip" title="Editar"><i class="fa-solid fa-pen-to-square"></i></a>
                                         <form action="delete-file.php" method="POST" style="display:inline;" onsubmit="return confirm('Tem certeza que deseja excluir este arquivo?')">
                                             <input type="hidden" name="id" value="<?= $file['file_id']; ?>">
-                                            <button type="submit" class="btn btn-danger btn-sm" data-bs-toggle="tooltip" title="Excluir"><i class="fa-solid fa-trash"></i></button>
+                                            <input type="hidden" name="ckedit" value="<?= $ckeditorParams; ?>">
+                                            <button type="submit" class="btn btn-danger btn-sm" data-bs-toggle="tooltip" title="Excluir">
+                                                <i class="fa-solid fa-trash"></i>
+                                            </button>
                                         </form>
                                     </td>
                                 </tr>

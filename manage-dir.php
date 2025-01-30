@@ -2,6 +2,13 @@
 session_start();
 include_once "./config.php";
 
+// Captura os parâmetros do CKEditor
+$ckeditorParams = http_build_query([
+    'CKEditor' => $_GET['CKEditor'] ?? '',
+    'CKEditorFuncNum' => $_GET['CKEditorFuncNum'] ?? '',
+    'langCode' => $_GET['langCode'] ?? '',
+]);
+
 // Função para buscar as pastas e a contagem de arquivos do banco de dados
 function getFoldersWithFileCount($conn)
 {
@@ -115,7 +122,7 @@ $folders = getFoldersWithFileCount($conn);
                                     </td>
 
                                     <td class="text-center"> <!-- Centralizando as ações -->
-                                        <a href="view-folder.php?id=<?= $folder['id']; ?>" class="btn btn-primary btn-sm position-relative" data-bs-toggle="tooltip" data-bs-title="Visualizar Arquivos na Pasta">
+                                        <a href="view-folder.php?id=<?= $folder['id']; ?>&<?= $ckeditorParams ?>" class="btn btn-primary btn-sm position-relative" data-bs-toggle="tooltip" data-bs-title="Visualizar Arquivos na Pasta">
                                             <i class="fa-regular fa-folder-open"></i>
                                             <?php if ($folder['file_count'] > 0): ?>
                                                 <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
@@ -124,8 +131,8 @@ $folders = getFoldersWithFileCount($conn);
                                                 </span>
                                             <?php endif; ?>
                                         </a>
-                                        <a href="edit-folder.php?id=<?= $folder['id']; ?>" class="btn btn-warning btn-sm" data-bs-toggle="tooltip" data-bs-title="Editar Pasta"><i class="fa-solid fa-pen-to-square"></i></a>
-                                        <form action="delete-folder.php" method="POST" style="display:inline;" onsubmit="return confirm('Tem certeza que deseja excluir esta pasta?\nTodos os arquivos contidos nesta pasta serão excluídos em cascata.\nEssa ação não pode ser desfeita.')">
+                                        <a href="edit-folder.php?id=<?= $folder['id']; ?>&<?= $ckeditorParams ?>" class="btn btn-warning btn-sm" data-bs-toggle="tooltip" data-bs-title="Editar Pasta"><i class="fa-solid fa-pen-to-square"></i></a>
+                                        <form action="delete-folder.php?<?= $ckeditorParams ?>" method="POST" style="display:inline;" onsubmit="return confirm('Tem certeza que deseja excluir esta pasta?\nTodos os arquivos contidos nesta pasta serão excluídos em cascata.\nEssa ação não pode ser desfeita.')">
                                             <input type="hidden" name="id" value="<?= $folder['id']; ?>">
                                             <button type="submit" class="btn btn-danger btn-sm" data-bs-toggle="tooltip" data-bs-title="Excluir Esta Pasta"><i class="fa-solid fa-trash"></i></button>
                                         </form>
@@ -138,7 +145,7 @@ $folders = getFoldersWithFileCount($conn);
                     <div class="row">
                         <div class="col-12 text-end">
                             <hr />
-                            <a href="./index.php" target="_self" type="button" class="btn btn-secondary">Cancelar</a>
+                            <a href="./index.php?<?= $ckeditorParams ?>" target="_self" type="button" class="btn btn-secondary">Cancelar</a>
                         </div>
                     </div>
 

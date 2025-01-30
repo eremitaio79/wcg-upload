@@ -2,6 +2,13 @@
 session_start();
 include_once "./config.php";
 
+// Captura os parâmetros do CKEditor
+$ckeditorParams = http_build_query([
+    'CKEditor' => $_GET['CKEditor'] ?? '',
+    'CKEditorFuncNum' => $_GET['CKEditorFuncNum'] ?? '',
+    'langCode' => $_GET['langCode'] ?? '',
+]);
+
 // Obtém o ID da pasta a partir da URL
 $folder_id = $_GET['id'] ?? null;
 
@@ -85,7 +92,8 @@ $files = $stmt_files->fetchAll(PDO::FETCH_ASSOC);
         <div class="row">
             <div class="col-12">
                 <h3>Arquivos da Pasta: <?= htmlspecialchars($folder['dir_name']); ?></h3>
-                <a href="manage-dir.php" class="btn btn-secondary btn-sm mb-3">Voltar</a>
+                <a href="manage-dir.php?<?= $ckeditorParams ?>" class="btn btn-secondary btn-sm mb-3">Voltar</a>
+                <hr />
                 <div class="d-flex flex-wrap gap-3">
                     <?php if (empty($files)): ?>
                         <div class="alert alert-info" role="alert">
@@ -109,6 +117,8 @@ $files = $stmt_files->fetchAll(PDO::FETCH_ASSOC);
                         <?php endforeach; ?>
                     <?php endif; ?>
                 </div>
+                <hr />
+                <a href="manage-dir.php?<?= $ckeditorParams ?>" class="btn btn-secondary btn-sm mb-3">Voltar</a>
             </div>
         </div>
     </main>
