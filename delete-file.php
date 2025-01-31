@@ -7,8 +7,15 @@ $formDataPost = filter_input_array(INPUT_POST, FILTER_DEFAULT);
 // var_dump($formDataPost); // Exibe os dados do formulário para depuração
 extract($formDataPost);
 
-// Captura e sanitiza a variável GET
-$type = isset($_GET['type']) ? htmlspecialchars($_GET['type']) : '';
+// Captura os parâmetros do CKEditor
+$ckeditorParams = http_build_query([
+    'CKEditor' => $_POST['CKEditor'] ?? '',
+    'CKEditorFuncNum' => $_POST['CKEditorFuncNum'] ?? '',
+    'langCode' => $_POST['langCode'] ?? '',
+]);
+
+// Captura e sanitiza a variável POST
+$type = isset($_POST['type']) ? htmlspecialchars($_POST['type']) : '';
 
 // Verifica se o ID foi passado no formulário
 if (isset($id)) {
@@ -30,7 +37,7 @@ if (isset($id)) {
         // Supondo que URL_SISTEMA2 seja 'http://localhost/codes-project/'
         // Vamos substituir 'http://localhost' pela raiz do servidor no DOCUMENT_ROOT
         $file_completo = str_replace('http://localhost', $_SERVER['DOCUMENT_ROOT'], $file_url);
-        // var_dump($file_completo); // Exibe o caminho físico completo do arquivo
+        var_dump($file_completo); // Exibe o caminho físico completo do arquivo
 
         // Verifica se o arquivo físico existe
         if (file_exists($file_completo)) {
@@ -61,17 +68,10 @@ if (isset($id)) {
 
 // Redireciona para a página principal ou de gerenciamento de arquivos
 if ($type === 'input') {
-    header("Location: index.php?type=input");
+    header("Location: thumbnail-input.php?$type=input");
     exit;
 } else {
-    session_start();
-        $_SESSION['message'] = $message; // Mensagem de erro
-        if ($type === 'input') {
-            header("Location: thumbnail-input.php?type=input");
-        } else {
-            header("Location: thumbnail.php?" . $ckeditorParams);
-            exit;
-        }
-        exit();
+    header("Location: thumbnail.php?$ckeditorParams");
+    exit;
 }
 exit;
