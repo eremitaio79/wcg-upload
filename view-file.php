@@ -79,7 +79,7 @@ $is_image = in_array($file_extension, ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp
 
                     <?php if ($is_image): ?>
                         <!-- Exibe a imagem -->
-                        <img src="<?= $file_url; ?>" alt="<?= htmlspecialchars($file['filename']); ?>">
+                        <img src="<?= $file_url; ?>" alt="<?= htmlspecialchars($file['filename']); ?>" class="rounded">
                     <?php else: ?>
                         <!-- Exibe link para download ou visualização -->
                         <p>O arquivo não pode ser exibido diretamente no navegador. Use o link abaixo para acessar:</p>
