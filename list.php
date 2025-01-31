@@ -75,14 +75,12 @@ $files = getFilesWithFolders($conn);
             /* Faz a imagem preencher o contêiner sem distorção */
             width: 100%;
             height: 100%;
-        }
-
-        .thumb-container {
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
-        .card:hover {
-            transform: scale(1.05);
+        /* Efeito de borda e aumento ao passar o mouse */
+        .thumb-container:hover .thumb-img {
+            transform: scale(1.1);
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
 
@@ -149,7 +147,7 @@ $files = getFilesWithFolders($conn);
                                 <th>Pasta</th>
                                 <th>Preview</th>
                                 <th>Caminho</th>
-                                <th>Status</th>
+                                <!-- <th>Status</th> -->
                                 <th class="text-center">Ações</th>
                             </tr>
                         </thead>
@@ -167,7 +165,10 @@ $files = getFilesWithFolders($conn);
                                     <td>
                                         <?php if ($isImage): ?>
                                             <div class="thumb-container">
-                                                <img src="<?= htmlspecialchars($file['path']); ?>" alt="<?= htmlspecialchars($file['filename']); ?>" class="thumb-img" data-bs-toggle="modal" data-bs-target="#previewModal" data-filepath="<?= htmlspecialchars($file['path']); ?>">
+                                                <img src="./files/img/<?= htmlspecialchars($file['folder_name']); ?>/<?= htmlspecialchars($file['filename']); ?>"
+                                                     class="thumb-img"
+                                                     data-filepath="<?= htmlspecialchars($file['path']); ?>"
+                                                     alt="<?= htmlspecialchars($file['filename']); ?>" />
                                             </div>
                                         <?php else: ?>
                                             <div class="thumb-container">
@@ -179,12 +180,8 @@ $files = getFilesWithFolders($conn);
                                     <td>
                                         <?= htmlspecialchars($file['path']); ?>
                                     </td>
-                                    <td>
-                                        <?= $file['file_status'] == 1 ? 'Ativo' : 'Inativo'; ?>
-                                    </td>
                                     <td class="text-center">
                                         <a href="view-file.php?id=<?= $file['file_id']; ?>&<?= $ckeditorParams ?>" class="btn btn-success btn-sm" data-bs-toggle="tooltip" title="Visualizar"><i class="fa-solid fa-eye"></i></a>
-                                        <a href="edit-file.php?id=<?= $file['file_id']; ?>&<?= $ckeditorParams ?>" class="btn btn-warning btn-sm" data-bs-toggle="tooltip" title="Editar"><i class="fa-solid fa-pen-to-square"></i></a>
                                         <form action="delete-file.php" method="POST" style="display:inline;" onsubmit="return confirm('Tem certeza que deseja excluir este arquivo?')">
                                             <input type="hidden" name="id" value="<?= $file['file_id']; ?>">
                                             <input type="hidden" name="ckedit" value="<?= $ckeditorParams; ?>">
@@ -230,10 +227,14 @@ $files = getFilesWithFolders($conn);
                 pageLength: 25
             });
 
-            // Exibe o preview no modal ao clicar na miniatura
+            // Envia o caminho da imagem para o CKEditor ao clicar na miniatura
             $('.thumb-img').on('click', function() {
                 const filepath = $(this).data('filepath');
-                $('#previewImage').attr('src', filepath);
+                window.opener.CKEDITOR.tools.callFunction(
+                    '<?= $_GET['CKEditorFuncNum'] ?>', 
+                    filepath
+                );
+                window.close();
             });
         });
     </script>

@@ -25,6 +25,7 @@ function getFilesWithFolders($conn)
             wcg_upload_dir d 
         ON 
             f.id_dir = d.id
+        ORDER BY f.id DESC
     ';
     $stmt = $conn->prepare($query);
     $stmt->execute();
@@ -34,7 +35,7 @@ function getFilesWithFolders($conn)
 $files = getFilesWithFolders($conn);
 
 // Paginação
-$itemsPerPage = 24;
+$itemsPerPage = 6;
 $totalItems = count($files);
 $totalPages = ceil($totalItems / $itemsPerPage);
 $currentPage = isset($_GET['page']) ? max(1, min($totalPages, intval($_GET['page']))) : 1;
@@ -154,9 +155,9 @@ $paginatedFiles = array_slice($files, $startIndex, $itemsPerPage);
                                 <i class="fa-solid fa-eye"></i>
                             </a>
                             <?php if ($isImage): ?>
-                                <a href="edit-file.php?id=<?= $file['file_id']; ?>&<?= $ckeditorParams ?>" class="btn btn-warning btn-sm" data-bs-toggle="tooltip" title="Editar">
+                                <!-- <a href="edit-file.php?id=<?= $file['file_id']; ?>&<?= $ckeditorParams ?>" class="btn btn-warning btn-sm" data-bs-toggle="tooltip" title="Editar">
                                     <i class="fa-solid fa-pen-to-square"></i>
-                                </a>
+                                </a> -->
                             <?php endif; ?>
                             <form action="delete-file.php" method="POST" style="display:inline;" onsubmit="return confirm('Tem certeza que deseja excluir este arquivo?')">
                                 <input type="hidden" name="id" value="<?= $file['file_id']; ?>">
@@ -177,6 +178,9 @@ $paginatedFiles = array_slice($files, $startIndex, $itemsPerPage);
                 <nav>
                     <ul class="pagination">
                         <li class="page-item <?= $currentPage == 1 ? 'disabled' : ''; ?>">
+                            <a class="page-link" href="?page=1&<?= $ckeditorParams ?>">Primeiro</a>
+                        </li>
+                        <li class="page-item <?= $currentPage == 1 ? 'disabled' : ''; ?>">
                             <a class="page-link" href="?page=<?= $currentPage - 1; ?>&<?= $ckeditorParams ?>">Anterior</a>
                         </li>
                         <?php for ($i = 1; $i <= $totalPages; $i++): ?>
@@ -187,9 +191,13 @@ $paginatedFiles = array_slice($files, $startIndex, $itemsPerPage);
                         <li class="page-item <?= $currentPage == $totalPages ? 'disabled' : ''; ?>">
                             <a class="page-link" href="?page=<?= $currentPage + 1; ?>&<?= $ckeditorParams ?>">Próximo</a>
                         </li>
+                        <li class="page-item <?= $currentPage == $totalPages ? 'disabled' : ''; ?>">
+                            <a class="page-link" href="?page=<?= $totalPages; ?>&<?= $ckeditorParams ?>">Último</a>
+                        </li>
                     </ul>
                 </nav>
             </div>
+
         <?php endif; ?>
     </main>
 

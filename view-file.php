@@ -26,9 +26,6 @@ if (!$file) {
 $file_path = str_replace($baseDir, '', $file['path']);
 $file_url = URL_SISTEMA . ltrim($file_path, '/');
 
-// echo "<p><p><p><p><p><p><p><p><p><p>Original: {$file['path']}</p>";
-// echo "<p>Corrigido: {$file_url}</p>";
-
 // Determina o tipo de arquivo
 $file_extension = strtolower(pathinfo($file['filename'], PATHINFO_EXTENSION));
 $is_image = in_array($file_extension, ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp']);
