@@ -15,12 +15,8 @@ if (!$file) {
     die("Arquivo não encontrado.");
 }
 
-// Transforme o caminho absoluto em um URL acessível publicamente
-$image_url = URL_SISTEMA2 . ltrim($file['path'], './');
-var_dump($image_url); // Verifique o valor da URL da imagem
-
-
-
+// Corrige a URL para evitar múltiplas barras
+$image_url = rtrim(URL_SISTEMA2, '/') . '/' . ltrim($file['path'], './');
 ?>
 
 <!DOCTYPE html>
@@ -34,7 +30,6 @@ var_dump($image_url); // Verifique o valor da URL da imagem
 
     <?php include_once "./dependences.php"; ?>
 
-    <!-- TUI Image Editor CSS -->
     <style>
         #tui-image-editor {
             height: 700px;
@@ -52,14 +47,10 @@ var_dump($image_url); // Verifique o valor da URL da imagem
         <div class="row">
             <div class="col-12">
                 <h3>Editar Imagem</h3>
-                <p>Você está editando o arquivo: <strong><?= htmlspecialchars($image_url) ?></strong></p>
-
-                <!-- Editor de Imagem -->
+                <p>Você está editando o arquivo: <strong><?= htmlspecialchars($file['filename']) ?></strong></p>
                 <div id="tui-image-editor"></div>
-
                 <div class="row">
                     <div class="col-12">
-                        <!-- Botão para salvar alterações -->
                         <button id="save-image" class="btn btn-primary mt-3">Salvar Alterações</button>
                         <a href="./thumbnail.php?<?= $ckeditorParams ?>" target="_self" class="btn btn-secondary">Voltar</a>
                     </div>
@@ -68,13 +59,12 @@ var_dump($image_url); // Verifique o valor da URL da imagem
         </div>
     </main>
 
-    <!-- TUI Image Editor JS -->
     <script>
         // Inicializa o editor TUI
         const imageEditor = new tui.ImageEditor('#tui-image-editor', {
             includeUI: {
                 loadImage: {
-                    path: "<?= $image_url; ?>", // Caminho da imagem
+                    path: "<?= $image_url; ?>",
                     name: "<?= htmlspecialchars($file['filename']); ?>"
                 },
                 theme: {},
@@ -93,28 +83,26 @@ var_dump($image_url); // Verifique o valor da URL da imagem
 
         // Evento para salvar a imagem editada
         document.getElementById('save-image').addEventListener('click', () => {
-            const dataURL = imageEditor.toDataURL(); // Obtém os dados da imagem editada
+            const dataURL = imageEditor.toDataURL();
+            console.log("Imagem editada:", dataURL);
 
-            // Verifique o valor de dataURL antes de enviar
-            console.log(dataURL);
+            const formData = new FormData();
+            formData.append("image", dataURL);
+            formData.append("path", "<?= htmlspecialchars($file['path']); ?>");
 
-            // Envia a imagem modificada para o servidor
             fetch('save-image.php', {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        image: dataURL,
-                        path: "<?= htmlspecialchars($file['path']); ?>" // Caminho do arquivo original
-                    }),
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                })
-                .then(response => response.json())
-                .then(data => {
-                    alert(data.message);
-                    window.location.href = 'index.php';
-                })
-                .catch(error => console.error('Erro ao salvar a imagem:', error));
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.text())
+            .then(data => {
+                alert(data);
+                // window.location.href = 'index.php';
+            })
+            .catch(error => {
+                console.error('Erro ao salvar a imagem:', error);
+                alert('Ocorreu um erro ao salvar a imagem. Verifique o console.');
+            });
         });
     </script>
 </body>

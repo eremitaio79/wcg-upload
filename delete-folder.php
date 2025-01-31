@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (!$folder) {
         $_SESSION['message'] = "Pasta não encontrada.";
-        header("Location: manage-dir.php");
+        header("Location: manage-dir.php?$ckeditorParams");
         exit();
     }
 
