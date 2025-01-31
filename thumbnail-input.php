@@ -43,6 +43,9 @@ $currentPage = isset($_GET['page']) ? max(1, min($totalPages, intval($_GET['page
 // Determinar o índice de início e fim
 $startIndex = ($currentPage - 1) * $itemsPerPage;
 $paginatedFiles = array_slice($files, $startIndex, $itemsPerPage);
+
+
+$type = isset($_GET['type']) ? $_GET['type'] : 'default';
 ?>
 
 <!DOCTYPE html>
@@ -197,6 +200,13 @@ $paginatedFiles = array_slice($files, $startIndex, $itemsPerPage);
                     </ul>
                 </nav>
             </div>
+
+            <div class="row">
+                <div class="col-12">
+                    <?= "Tipo recebido: " . htmlspecialchars($type); ?>
+                </div>
+            </div>
+
 
         <?php endif; ?>
     </main>
