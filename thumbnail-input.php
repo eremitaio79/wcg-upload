@@ -35,7 +35,7 @@ function getFilesWithFolders($conn)
 $files = getFilesWithFolders($conn);
 
 // Paginação
-$itemsPerPage = 6;
+$itemsPerPage = 42;
 $totalItems = count($files);
 $totalPages = ceil($totalItems / $itemsPerPage);
 $currentPage = isset($_GET['page']) ? max(1, min($totalPages, intval($_GET['page']))) : 1;
@@ -45,7 +45,8 @@ $startIndex = ($currentPage - 1) * $itemsPerPage;
 $paginatedFiles = array_slice($files, $startIndex, $itemsPerPage);
 
 
-$type = isset($_GET['type']) ? $_GET['type'] : 'default';
+// Captura e sanitiza a variável GET
+$type = isset($_GET['type']) ? htmlspecialchars($_GET['type']) : '';
 ?>
 
 <!DOCTYPE html>
@@ -121,7 +122,7 @@ $type = isset($_GET['type']) ? $_GET['type'] : 'default';
     </header>
 
     <main class="container my-5">
-        <h3>Gerenciador de Arquivos - Visualização em Cards</h3>
+        <h3>Gerenciador de Arquivos - Miniaturas</h3>
         <hr />
 
         <!-- Exibe alerta se não houver arquivos -->
@@ -137,6 +138,7 @@ $type = isset($_GET['type']) ? $_GET['type'] : 'default';
                     $isImage = preg_match('/\.(jpg|jpeg|png|gif|bmp|webp)$/i', $file['filename']);
                     ?>
                     <div class="card"
+                        style="height: 150px;"
                         onclick="selectImage('<?= htmlspecialchars($file['path']); ?>')"
                         data-bs-toggle="tooltip"
                         data-bs-html="true"
@@ -145,18 +147,26 @@ $type = isset($_GET['type']) ? $_GET['type'] : 'default';
                         <?php if ($isImage): ?>
                             <img src="./files/img/<?= htmlspecialchars($file['folder_name']); ?>/<?= htmlspecialchars($file['filename']); ?>"
                                 class="card-img-top img-fluid"
-                                style="object-fit: cover; height: 200px;"
+                                style="object-fit: cover; height: 100px;"
                                 alt="<?= htmlspecialchars($file['filename']); ?>" />
                         <?php else: ?>
                             <i class="fas fa-file-alt fa-5x"
-                                style="display: flex; justify-content: center; align-items: center; height: 100px; margin-top: 50px;"></i>
+                                style="display: flex; justify-content: center; align-items: center; height: 40px; margin-top: 30px;"></i>
                         <?php endif; ?>
 
                         <!-- Rodapé do Card com Botões -->
                         <div class="card-footer bg-dark" onclick="event.stopPropagation();">
+
+                        <?php if ($type === 'input') { ?>
+                            <a href="view-file.php?id=<?= $file['file_id']; ?>&type=input" class="btn btn-success btn-sm" data-bs-toggle="tooltip" title="Visualizar">
+                                <i class="fa-solid fa-eye"></i>
+                            </a>
+                        <?php } else { ?>
                             <a href="view-file.php?id=<?= $file['file_id']; ?>&<?= $ckeditorParams ?>" class="btn btn-success btn-sm" data-bs-toggle="tooltip" title="Visualizar">
                                 <i class="fa-solid fa-eye"></i>
                             </a>
+                        <?php } ?>
+
                             <?php if ($isImage): ?>
                                 <!-- <a href="edit-file.php?id=<?= $file['file_id']; ?>&<?= $ckeditorParams ?>" class="btn btn-warning btn-sm" data-bs-toggle="tooltip" title="Editar">
                                     <i class="fa-solid fa-pen-to-square"></i>
@@ -178,29 +188,52 @@ $type = isset($_GET['type']) ? $_GET['type'] : 'default';
 
             <!-- Paginação -->
             <div class="pagination-container">
-                <nav>
-                    <ul class="pagination">
-                        <li class="page-item <?= $currentPage == 1 ? 'disabled' : ''; ?>">
-                            <a class="page-link" href="?page=1&<?= $ckeditorParams ?>">Primeiro</a>
-                        </li>
-                        <li class="page-item <?= $currentPage == 1 ? 'disabled' : ''; ?>">
-                            <a class="page-link" href="?page=<?= $currentPage - 1; ?>&<?= $ckeditorParams ?>">Anterior</a>
-                        </li>
-                        <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-                            <li class="page-item <?= $i == $currentPage ? 'active' : ''; ?>">
-                                <a class="page-link" href="?page=<?= $i; ?>&<?= $ckeditorParams ?>"><?= $i; ?></a>
+                <?php if ($type === 'input') { ?>
+                    <nav>
+                        <ul class="pagination">
+                            <li class="page-item <?= $currentPage == 1 ? 'disabled' : ''; ?>">
+                                <a class="page-link" href="?page=1&type=input">Primeiro</a>
                             </li>
-                        <?php endfor; ?>
-                        <li class="page-item <?= $currentPage == $totalPages ? 'disabled' : ''; ?>">
-                            <a class="page-link" href="?page=<?= $currentPage + 1; ?>&<?= $ckeditorParams ?>">Próximo</a>
-                        </li>
-                        <li class="page-item <?= $currentPage == $totalPages ? 'disabled' : ''; ?>">
-                            <a class="page-link" href="?page=<?= $totalPages; ?>&<?= $ckeditorParams ?>">Último</a>
-                        </li>
-                    </ul>
-                </nav>
+                            <li class="page-item <?= $currentPage == 1 ? 'disabled' : ''; ?>">
+                                <a class="page-link" href="?page=<?= $currentPage - 1; ?>&type=input">Anterior</a>
+                            </li>
+                            <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                                <li class="page-item <?= $i == $currentPage ? 'active' : ''; ?>">
+                                    <a class="page-link" href="?page=<?= $i; ?>&type=input"><?= $i; ?></a>
+                                </li>
+                            <?php endfor; ?>
+                            <li class="page-item <?= $currentPage == $totalPages ? 'disabled' : ''; ?>">
+                                <a class="page-link" href="?page=<?= $currentPage + 1; ?>&type=input">Próximo</a>
+                            </li>
+                            <li class="page-item <?= $currentPage == $totalPages ? 'disabled' : ''; ?>">
+                                <a class="page-link" href="?page=<?= $totalPages; ?>&type=input">Último</a>
+                            </li>
+                        </ul>
+                    </nav>
+                <?php } else { ?>
+                    <nav>
+                        <ul class="pagination">
+                            <li class="page-item <?= $currentPage == 1 ? 'disabled' : ''; ?>">
+                                <a class="page-link" href="?page=1&<?= $ckeditorParams ?>">Primeiro</a>
+                            </li>
+                            <li class="page-item <?= $currentPage == 1 ? 'disabled' : ''; ?>">
+                                <a class="page-link" href="?page=<?= $currentPage - 1; ?>&<?= $ckeditorParams ?>">Anterior</a>
+                            </li>
+                            <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                                <li class="page-item <?= $i == $currentPage ? 'active' : ''; ?>">
+                                    <a class="page-link" href="?page=<?= $i; ?>&<?= $ckeditorParams ?>"><?= $i; ?></a>
+                                </li>
+                            <?php endfor; ?>
+                            <li class="page-item <?= $currentPage == $totalPages ? 'disabled' : ''; ?>">
+                                <a class="page-link" href="?page=<?= $currentPage + 1; ?>&<?= $ckeditorParams ?>">Próximo</a>
+                            </li>
+                            <li class="page-item <?= $currentPage == $totalPages ? 'disabled' : ''; ?>">
+                                <a class="page-link" href="?page=<?= $totalPages; ?>&<?= $ckeditorParams ?>">Último</a>
+                            </li>
+                        </ul>
+                    </nav>
+                <?php } ?>
             </div>
-
             <div class="row">
                 <div class="col-12">
                     <?= "Tipo recebido: " . htmlspecialchars($type); ?>

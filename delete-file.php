@@ -4,8 +4,11 @@ include_once "./config.php";
 
 // Captura os dados enviados pelo formulário
 $formDataPost = filter_input_array(INPUT_POST, FILTER_DEFAULT);
-var_dump($formDataPost); // Exibe os dados do formulário para depuração
+// var_dump($formDataPost); // Exibe os dados do formulário para depuração
 extract($formDataPost);
+
+// Captura e sanitiza a variável GET
+$type = isset($_GET['type']) ? htmlspecialchars($_GET['type']) : '';
 
 // Verifica se o ID foi passado no formulário
 if (isset($id)) {
@@ -21,13 +24,13 @@ if (isset($id)) {
 
         // Concatena a URL base (URL_SISTEMA2) com o caminho armazenado no banco de dados
         $file_url = URL_SISTEMA2 . ltrim($file['path'], './');
-        var_dump($file_url); // Exibe a URL para depuração
+        // var_dump($file_url); // Exibe a URL para depuração
 
         // Converte a URL para o caminho físico no servidor
         // Supondo que URL_SISTEMA2 seja 'http://localhost/codes-project/'
         // Vamos substituir 'http://localhost' pela raiz do servidor no DOCUMENT_ROOT
         $file_completo = str_replace('http://localhost', $_SERVER['DOCUMENT_ROOT'], $file_url);
-        var_dump($file_completo); // Exibe o caminho físico completo do arquivo
+        // var_dump($file_completo); // Exibe o caminho físico completo do arquivo
 
         // Verifica se o arquivo físico existe
         if (file_exists($file_completo)) {
@@ -57,5 +60,18 @@ if (isset($id)) {
 }
 
 // Redireciona para a página principal ou de gerenciamento de arquivos
-header("Location: index.php?$ckedit");
+if ($type === 'input') {
+    header("Location: index.php?type=input");
+    exit;
+} else {
+    session_start();
+        $_SESSION['message'] = $message; // Mensagem de erro
+        if ($type === 'input') {
+            header("Location: thumbnail-input.php?type=input");
+        } else {
+            header("Location: thumbnail.php?" . $ckeditorParams);
+            exit;
+        }
+        exit();
+}
 exit;

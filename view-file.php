@@ -8,6 +8,9 @@ $ckeditorParams = http_build_query([
     'langCode' => $_GET['langCode'] ?? '',
 ]);
 
+// Captura e sanitiza a variável GET
+$type = isset($_GET['type']) ? htmlspecialchars($_GET['type']) : '';
+
 // Obtém o ID do arquivo da URL
 $file_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 
@@ -71,7 +74,11 @@ $is_image = in_array($file_extension, ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp
                 <div class="file-container">
                     <div class="row">
                         <div class="col-12">
-                            <a href="./thumbnail.php?<?= $ckeditorParams ?>" target="_self" class="btn btn-primary">Voltar</a>
+                            <?php if ($type === 'input') { ?>
+                                <a href="./thumbnail-input.php?type=input" target="_self" class="btn btn-primary">Voltar</a>
+                            <?php } else { ?>
+                                <a href="./thumbnail.php?<?= $ckeditorParams ?>" target="_self" class="btn btn-primary">Voltar</a>
+                            <?php } ?>
                             <hr />
                         </div>
                     </div>
@@ -89,7 +96,11 @@ $is_image = in_array($file_extension, ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp
                     <div class="row">
                         <div class="col-12">
                             <hr />
-                            <a href="./thumbnail.php?<?= $ckeditorParams ?>" target="_self" class="btn btn-primary">Voltar</a>
+                            <?php if ($type === 'input') { ?>
+                                <a href="./thumbnail-input.php?type=input" target="_self" class="btn btn-primary">Voltar</a>
+                            <?php } else { ?>
+                                <a href="./thumbnail.php?<?= $ckeditorParams ?>" target="_self" class="btn btn-primary">Voltar</a>
+                            <?php } ?>
                         </div>
                     </div>
                 </div>

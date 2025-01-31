@@ -35,7 +35,7 @@ function getFilesWithFolders($conn)
 $files = getFilesWithFolders($conn);
 
 // Paginação
-$itemsPerPage = 6;
+$itemsPerPage = 42;
 $totalItems = count($files);
 $totalPages = ceil($totalItems / $itemsPerPage);
 $currentPage = isset($_GET['page']) ? max(1, min($totalPages, intval($_GET['page']))) : 1;
@@ -118,7 +118,7 @@ $paginatedFiles = array_slice($files, $startIndex, $itemsPerPage);
     </header>
 
     <main class="container my-5">
-        <h3>Gerenciador de Arquivos - Visualização em Cards</h3>
+        <h3>Gerenciador de Arquivos - Miniaturas</h3>
         <hr />
 
         <!-- Exibe alerta se não houver arquivos -->
@@ -134,6 +134,7 @@ $paginatedFiles = array_slice($files, $startIndex, $itemsPerPage);
                     $isImage = preg_match('/\.(jpg|jpeg|png|gif|bmp|webp)$/i', $file['filename']);
                     ?>
                     <div class="card"
+                        style="height: 150px;"
                         onclick="selectImage('<?= htmlspecialchars($file['path']); ?>')"
                         data-bs-toggle="tooltip"
                         data-bs-html="true"
@@ -142,11 +143,11 @@ $paginatedFiles = array_slice($files, $startIndex, $itemsPerPage);
                         <?php if ($isImage): ?>
                             <img src="./files/img/<?= htmlspecialchars($file['folder_name']); ?>/<?= htmlspecialchars($file['filename']); ?>"
                                 class="card-img-top img-fluid"
-                                style="object-fit: cover; height: 200px;"
+                                style="object-fit: cover; height: 100px;"
                                 alt="<?= htmlspecialchars($file['filename']); ?>" />
                         <?php else: ?>
                             <i class="fas fa-file-alt fa-5x"
-                                style="display: flex; justify-content: center; align-items: center; height: 100px; margin-top: 50px;"></i>
+                                style="display: flex; justify-content: center; align-items: center; height: 40px; margin-top: 30px;"></i>
                         <?php endif; ?>
 
                         <!-- Rodapé do Card com Botões -->

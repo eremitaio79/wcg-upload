@@ -10,6 +10,9 @@ $ckeditorParams = http_build_query([
     'langCode' => $_GET['langCode'] ?? '',
 ]);
 
+// Captura e sanitiza a variável GET
+$type = isset($_GET['type']) ? htmlspecialchars($_GET['type']) : '';
+
 // Função para limpar o nome da pasta (remove espaços, caracteres especiais, coloca tudo em minúsculas e substitui espaços por underscores)
 function cleanFolderName($folderName)
 {
@@ -93,20 +96,34 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             // Redireciona para index.php com a mensagem de sucesso
             session_start();
             $_SESSION['message'] = "Pasta criada com sucesso!";
-            header("Location: manage-dir.php?$ckeditorParams");
+
+            if ($type === 'input') {
+                header("Location: manage-dir.php?type=input");
+            } else {
+                header("Location: manage-dir.php?$ckeditorParams");
+            }
             exit();
+            
         } else {
             // Caso não consiga inserir no banco de dados
             session_start();
             $_SESSION['message'] = "Erro ao registrar a pasta no banco de dados.";
-            header("Location: manage-dir.php?$ckeditorParams");
+            if ($type === 'input') {
+                header("Location: manage-dir.php?type=input");
+            } else {
+                header("Location: manage-dir.php?$ckeditorParams");
+            }
             exit();
         }
     } else {
         // Se houve erro ao criar a pasta ou se já existe
         session_start();
         $_SESSION['message'] = $message; // Mensagem de erro
-        header("Location: create-dir.php?$ckeditorParams"); // Redireciona de volta para create-dir.php
+        if ($type === 'input') {
+            header("Location: create-dir.php?type=input");
+        } else {
+            header("Location: create-dir.php?$ckeditorParams");
+        }
         exit();
     }
 }

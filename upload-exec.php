@@ -15,8 +15,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     // Verifica se uma pasta foi selecionada
     if (!$folderId) {
-        die("Selecione uma pasta para fazer o upload.");
+        die("
+        <div style='text-align: center; font-family: Arial, sans-serif; padding: 20px;'>
+            <p style='color: red; font-size: 16px;'>Erro: A pasta não foi reconhecida. Selecione uma pasta para fazer o upload.</p>
+            <button onclick='window.close();' style='padding: 10px 15px; background-color: #dc3545; color: white; border: none; cursor: pointer; font-size: 14px; border-radius: 5px;'>Fechar</button>
+        </div>
+    ");
     }
+
 
     // Obtém o caminho da pasta selecionada
     $stmt = $conn->prepare("SELECT path FROM wcg_upload_dir WHERE id = :id AND status = 1");
@@ -104,11 +110,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     // Redireciona para index.php após o upload
     // header("Location: thumbnail.php");
-        if(htmlspecialchars($type) == 'input') {
-            header('Location: thumbnail-input.php');
-            exit;
-        } else {
-            header('Location: thumbnail.php?$ckeditorParams');
-            exit;
-        }
+    if (isset($type) && htmlspecialchars($type) == 'input') {
+        header('Location: thumbnail-input.php');
+        exit;
+    } else {
+        $params = isset($ckeditorParams) ? htmlspecialchars($ckeditorParams) : '';
+        header("Location: thumbnail.php?$params");
+        exit;
+    }
 }

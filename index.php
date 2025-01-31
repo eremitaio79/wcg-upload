@@ -9,14 +9,26 @@ $ckeditorParams = http_build_query([
     'langCode' => $_GET['langCode'] ?? '',
 ]);
 
+// Captura e sanitiza a variável GET
+$type = isset($_GET['type']) ? htmlspecialchars($_GET['type']) : '';
 
 // Redirecionamento antes de qualquer saída
 if (DEFAULT_PAGE_VIEW == 1) {
-    header("Location: thumbnail.php?$ckeditorParams");
-    exit();
+    if ($type === 'input') {
+        header("Location: thumbnail-input.php?type=input");
+        exit();
+    } else {
+        header("Location: thumbnail.php?$ckeditorParams");
+        exit();
+    }
 } elseif (DEFAULT_PAGE_VIEW == 2) {
-    header("Location: list.php?$ckeditorParams");
-    exit();
+    if ($type === 'input') {
+        header("Location: thumbnail-input.php?type=input");
+        exit();
+    } else {
+        header("Location: list.php?$ckeditorParams");
+        exit();
+    }
 }
 ?>
 
