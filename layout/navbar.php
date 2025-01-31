@@ -22,7 +22,11 @@ $type = isset($_GET['type']) ? htmlspecialchars($_GET['type']) : '';
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav me-auto">
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="./index.php?<?= $ckeditorParams ?>" target="_self">Home</a>
+                <?php if ($type === 'input') { ?>
+                    <a class="nav-link active" aria-current="page" href="./index.php?type=input" target="_self">Home</a>
+                <?php } else { ?>
+                    <a class="nav-link active" aria-current="page" href="./index.php?<?php echo htmlspecialchars($ckeditorParams); ?>" target="_self">Home</a>
+                <?php } ?>
                 </li>
             </ul>
 
@@ -32,7 +36,7 @@ $type = isset($_GET['type']) ? htmlspecialchars($_GET['type']) : '';
                 if ($type === 'input') {
                     echo "<a href='./thumbnail-input.php?type=input' target='_self' class='btn btn-secondary' data-bs-toggle='tooltip' data-bs-placement='bottom' data-bs-title='Visualização em Miniaturas'><i class='fa-solid fa-image'></i></a>";
                 } else {
-                    echo "<a href='./thumbnail.php?<?= $ckeditorParams ?>' target='_self' class='btn btn-secondary' data-bs-toggle='tooltip' data-bs-placement='bottom' data-bs-title='Visualização em Miniaturas'><i class='fa-solid fa-image'></i></a>";
+                    echo "<a href='./thumbnail.php?" . htmlspecialchars($ckeditorParams) . "' target='_self' class='btn btn-secondary' data-bs-toggle='tooltip' data-bs-placement='bottom' data-bs-title='Visualização em Miniaturas'><i class='fa-solid fa-image'></i></a>";
                 }
                 ?>
 
@@ -40,7 +44,7 @@ $type = isset($_GET['type']) ? htmlspecialchars($_GET['type']) : '';
                 // Condição para exibir o link correto
                 if ($type === 'input') {
                 } else {
-                    echo "<a href='./list.php?<?= $ckeditorParams ?>' target='_self' class='btn btn-secondary' data-bs-toggle='tooltip' data-bs-placement='bottom' data-bs-title='Visualização em Lista'><i class='fa-solid fa-list'></i></a>";
+                    echo "<a href='./list.php?" . htmlspecialchars($ckeditorParams) . "' target='_self' class='btn btn-secondary' data-bs-toggle='tooltip' data-bs-placement='bottom' data-bs-title='Visualização em Lista'><i class='fa-solid fa-list'></i></a>";
                 }
                 ?>
             </div>
@@ -52,7 +56,7 @@ $type = isset($_GET['type']) ? htmlspecialchars($_GET['type']) : '';
                     echo "<a href='./upload.php?type=input' target='_self' class='btn btn-primary' data-bs-toggle='tooltip' data-bs-placement='bottom' data-bs-title='Fazer Novo Upload'>
                     <i class='fa-solid fa-image'></i>&nbsp;Upload</a>";
                 } else {
-                    echo "<a href='./thumbnail.php?<?= $ckeditorParams ?>' target='_self' class='btn btn-primary' data-bs-toggle='tooltip' data-bs-placement='bottom' data-bs-title='Fazer Novo Upload'>
+                    echo "<a href='./upload.php?" . htmlspecialchars($ckeditorParams) . "' target='_self' class='btn btn-primary' data-bs-toggle='tooltip' data-bs-placement='bottom' data-bs-title='Fazer Novo Upload'>
                     <i class='fa-solid fa-image'></i>&nbsp;Upload</a>";
                 }
                 ?>
@@ -62,16 +66,16 @@ $type = isset($_GET['type']) ? htmlspecialchars($_GET['type']) : '';
                 if ($type === 'input') {
                     echo "<a href='./create-dir.php?type=input' target='_self' class='btn btn-success' data-bs-toggle='tooltip' data-bs-placement='bottom' data-bs-title='Criar Nova Pasta'><i class='fa-solid fa-folder-plus'></i></a>";
                 } else {
-                    echo "<a href='./create-dir.php?<?= $ckeditorParams ?>' target='_self' class='btn btn-success' data-bs-toggle='tooltip' data-bs-placement='bottom' data-bs-title='Criar Nova Pasta'><i class='fa-solid fa-folder-plus'></i></a>";
+                    echo "<a href='./create-dir.php?" . htmlspecialchars($ckeditorParams) . "' target='_self' class='btn btn-success' data-bs-toggle='tooltip' data-bs-placement='bottom' data-bs-title='Criar Nova Pasta'><i class='fa-solid fa-folder-plus'></i></a>";
                 }
                 ?>
 
-<?php
+                <?php
                 // Condição para exibir o link correto
                 if ($type === 'input') {
                     echo "<a href='./manage-dir.php?type=input' target='_self' class='btn btn-secondary' data-bs-toggle='tooltip' data-bs-placement='bottom' data-bs-title='Gerenciador de Pastas'><i class='fa-solid fa-folder-tree'></i></a>";
                 } else {
-                    echo "<a href='./manage-dir.php?<?= $ckeditorParams ?>' target='_self' class='btn btn-secondary' data-bs-toggle='tooltip' data-bs-placement='bottom' data-bs-title='Gerenciador de Pastas'><i class='fa-solid fa-folder-tree'></i></a>";
+                    echo "<a href='./manage-dir.php?" . htmlspecialchars($ckeditorParams) . "' target='_self' class='btn btn-secondary' data-bs-toggle='tooltip' data-bs-placement='bottom' data-bs-title='Gerenciador de Pastas'><i class='fa-solid fa-folder-tree'></i></a>";
                 }
                 ?>
             </div>

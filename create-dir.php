@@ -9,6 +9,9 @@ $ckeditorParams = http_build_query([
 ]);
 
 include_once "./config.php";
+
+// Captura e sanitiza a variável GET
+$type = isset($_GET['type']) ? htmlspecialchars($_GET['type']) : '';
 ?>
 
 <!DOCTYPE html>
@@ -69,7 +72,11 @@ include_once "./config.php";
                 </script>
 
                 <!-- Formulário de Criação de Pasta -->
-                <form action="create-dir-exec.php?<?= $ckeditorParams ?>" method="POST">
+                <?php if ($type === 'input') { ?>
+                    <form action="create-dir-exec.php?type=input" method="POST">
+                <?php } else { ?>
+                    <form action="create-dir-exec.php?<?php echo $ckeditorParams; ?>" method="POST">
+                <?php } ?>
                     <div class="mb-3">
                         <label for="folderName" class="form-label">Nome da nova pasta</label>
                         <input type="text" class="form-control" id="folderName" name="folderName" required>
@@ -88,7 +95,13 @@ include_once "./config.php";
                     <div class="row">
                         <div class="col-12 text-end">
                             <button type="submit" class="btn btn-primary">Criar Pasta</button>
-                            <a href="./index.php?<?= $ckeditorParams ?>" target="_self" type="button" class="btn btn-secondary">Cancelar</a>
+
+                            <?php if ($type === 'input') { ?>
+                                <a href="./thumbnail-input.php?type=input" target="_self" type="button" class="btn btn-secondary">Cancelar</a>
+                            <?php } else { ?>
+                                <a href="./index.php?<?php echo $ckeditorParams; ?>" target="_self" class="btn btn-secondary">Cancelar</a>
+                            <?php } ?>
+
                         </div>
                     </div>
                 </form>
