@@ -8,6 +8,8 @@ $ckeditorParams = http_build_query([
     'langCode' => $_GET['langCode'] ?? '',
 ]);
 
+$type = isset($_GET['type']) ? $_GET['type'] : 'default';
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $folderId = $_POST['folder_id'] ?? null;
 
@@ -102,6 +104,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     // Redireciona para index.php após o upload
     // header("Location: thumbnail.php");
-    header("Location: thumbnail.php?$ckeditorParams");
-    exit;
+        if(htmlspecialchars($type) == 'input') {
+            header('Location: thumbnail-input.php');
+            exit;
+        } else {
+            header('Location: thumbnail.php?$ckeditorParams');
+            exit;
+        }
 }

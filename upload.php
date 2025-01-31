@@ -12,6 +12,8 @@ $ckeditorParams = http_build_query([
 $stmt = $conn->prepare("SELECT id, dir_name, path FROM wcg_upload_dir WHERE status = 1");
 $stmt->execute();
 $folders = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+$type = isset($_GET['type']) ? $_GET['type'] : 'default';
 ?>
 
 
@@ -36,7 +38,13 @@ $folders = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     <div class="container mt-5">
         <h2 class="mb-4">Upload de Arquivos</h2>
-        <form action="upload-exec.php?<?= $ckeditorParams ?>" method="POST" enctype="multipart/form-data">
+            <?php
+            if(htmlspecialchars($type) == 'input') {
+                echo "<form action='upload-exec.php?<?= $ckeditorParams ?>&type=input' method='POST' enctype='multipart/form-data'>";
+            } else {
+                echo "<form action='upload-exec.php?<?= $ckeditorParams ?>' method='POST' enctype='multipart/form-data'>";
+            }
+            ?>
             <div class="row mb-3">
                 <!-- Select de Pastas -->
                 <div class="col-md-4">
