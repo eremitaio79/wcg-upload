@@ -152,15 +152,25 @@ $paginatedFiles = array_slice($files, $startIndex, $itemsPerPage);
 
                         <!-- Rodapé do Card com Botões -->
                         <div class="card-footer bg-dark" onclick="event.stopPropagation();">
-                            <a href="view-file.php?id=<?= $file['file_id']; ?>&<?= $ckeditorParams ?>" class="btn btn-success btn-sm" data-bs-toggle="tooltip" title="Visualizar">
-                                <i class="fa-solid fa-eye"></i>
-                            </a>
+                            <?php if ($type === 'input') { ?>
+                                <a href="view-file.php?id=<?= $file['file_id']; ?>&type=input" class="btn btn-success btn-sm" data-bs-toggle="tooltip" title="Visualizar">
+                                    <i class="fa-solid fa-eye"></i>
+                                </a>
+                            <?php } else { ?>
+                                <a href="view-file.php?id=<?= $file['file_id']; ?>&<?= $ckeditorParams ?>" class="btn btn-success btn-sm" data-bs-toggle="tooltip" title="Visualizar">
+                                    <i class="fa-solid fa-eye"></i>
+                                </a>
+                            <?php } ?>
+
                             <?php if ($isImage): ?>
                                 <!-- <a href="edit-file.php?id=<?= $file['file_id']; ?>&<?= $ckeditorParams ?>" class="btn btn-warning btn-sm" data-bs-toggle="tooltip" title="Editar">
                                     <i class="fa-solid fa-pen-to-square"></i>
                                 </a> -->
                             <?php endif; ?>
                             <form action="delete-file.php" method="POST" style="display:inline;" onsubmit="return confirm('Tem certeza que deseja excluir este arquivo?')">
+                                <input type="hidden" name="CKEditor" value="editor">
+                                <input type="hidden" name="CKEditorFuncNum" value="0">
+                                <input type="hidden" name="langCode" value="pt">
                                 <input type="hidden" name="id" value="<?= $file['file_id']; ?>">
                                 <input type="hidden" name="ckedit" value="<?= $ckeditorParams; ?>">
                                 <button type="submit" class="btn btn-danger btn-sm" data-bs-toggle="tooltip" title="Excluir">

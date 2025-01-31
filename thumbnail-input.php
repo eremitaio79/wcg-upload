@@ -173,6 +173,7 @@ $type = isset($_GET['type']) ? htmlspecialchars($_GET['type']) : '';
                                 </a> -->
                             <?php endif; ?>
                             <form action="delete-file.php" method="POST" style="display:inline;" onsubmit="return confirm('Tem certeza que deseja excluir este arquivo?')">
+                                <input type="hidden" name="type" value="input">
                                 <input type="hidden" name="id" value="<?= $file['file_id']; ?>">
                                 <input type="hidden" name="ckedit" value="<?= $ckeditorParams; ?>">
                                 <button type="submit" class="btn btn-danger btn-sm" data-bs-toggle="tooltip" title="Excluir">
