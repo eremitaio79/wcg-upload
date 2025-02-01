@@ -9,6 +9,9 @@ $ckeditorParams = http_build_query([
     'langCode' => $_GET['langCode'] ?? '',
 ]);
 
+// Captura e sanitiza a variável GET
+$type = isset($_GET['type']) ? htmlspecialchars($_GET['type']) : '';
+
 // Função para buscar as pastas e a contagem de arquivos do banco de dados
 function getFoldersWithFileCount($conn)
 {
@@ -122,6 +125,17 @@ $folders = getFoldersWithFileCount($conn);
                                     </td>
 
                                     <td class="text-center"> <!-- Centralizando as ações -->
+                                    <?php if ($type === 'input') { ?>
+                                        <a href="view-folder.php?id=<?= $folder['id']; ?>&type=input" class="btn btn-primary btn-sm position-relative" data-bs-toggle="tooltip" data-bs-title="Visualizar Arquivos na Pasta">
+                                            <i class="fa-regular fa-folder-open"></i>
+                                            <?php if ($folder['file_count'] > 0): ?>
+                                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                                    <?= $folder['file_count']; ?>
+                                                    <span class="visually-hidden">arquivos não lidos</span>
+                                                </span>
+                                            <?php endif; ?>
+                                        </a>
+                                    <?php } else { ?>
                                         <a href="view-folder.php?id=<?= $folder['id']; ?>&<?= $ckeditorParams ?>" class="btn btn-primary btn-sm position-relative" data-bs-toggle="tooltip" data-bs-title="Visualizar Arquivos na Pasta">
                                             <i class="fa-regular fa-folder-open"></i>
                                             <?php if ($folder['file_count'] > 0): ?>
@@ -131,7 +145,14 @@ $folders = getFoldersWithFileCount($conn);
                                                 </span>
                                             <?php endif; ?>
                                         </a>
-                                        <a href="edit-folder.php?id=<?= $folder['id']; ?>&<?= $ckeditorParams ?>" class="btn btn-warning btn-sm" data-bs-toggle="tooltip" data-bs-title="Editar Pasta"><i class="fa-solid fa-pen-to-square"></i></a>
+                                    <?php } ?>    
+                                    
+                                    <?php if ($type === 'input') { ?>
+                                        <a href="edit-folder.php?id=<?= $folder['id']; ?>&type=input" class="btn btn-warning btn-sm" data-bs-toggle="tooltip" data-bs-title="Editar Pasta"><i class="fa-solid fa-pen-to-square"></i></a>
+                                    <?php } else { ?>
+                                            <a href="edit-folder.php?id=<?= $folder['id']; ?>&<?= $ckeditorParams ?>" class="btn btn-warning btn-sm" data-bs-toggle="tooltip" data-bs-title="Editar Pasta"><i class="fa-solid fa-pen-to-square"></i></a>
+                                    <?php } ?>    
+
                                         <form action="delete-folder.php?<?= $ckeditorParams ?>" method="POST" style="display:inline;" onsubmit="return confirm('Tem certeza que deseja excluir esta pasta?\nTodos os arquivos contidos nesta pasta serão excluídos em cascata.\nEssa ação não pode ser desfeita.')">
                                             <input type="hidden" name="id" value="<?= $folder['id']; ?>">
                                             <button type="submit" class="btn btn-danger btn-sm" data-bs-toggle="tooltip" data-bs-title="Excluir Esta Pasta"><i class="fa-solid fa-trash"></i></button>
@@ -145,7 +166,11 @@ $folders = getFoldersWithFileCount($conn);
                     <div class="row">
                         <div class="col-12 text-end">
                             <hr />
-                            <a href="./index.php?<?= $ckeditorParams ?>" target="_self" type="button" class="btn btn-secondary">Cancelar</a>
+                            <?php if ($type === 'input') { ?>
+                                <a href="./thumbnail-input.php?type=input" target="_self" type="button" class="btn btn-secondary">Cancelar</a>
+                            <?php } else { ?>
+                                <a href="./thumbnail.php?<?= $ckeditorParams ?>" target="_self" type="button" class="btn btn-secondary">Cancelar</a>
+                            <?php } ?>
                         </div>
                     </div>
 
