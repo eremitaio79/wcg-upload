@@ -235,12 +235,6 @@ $type = isset($_GET['type']) ? htmlspecialchars($_GET['type']) : '';
                     </nav>
                 <?php } ?>
             </div>
-            <div class="row">
-                <div class="col-12">
-                    <?= "Tipo recebido: " . htmlspecialchars($type); ?>
-                </div>
-            </div>
-
 
         <?php endif; ?>
     </main>

@@ -9,6 +9,9 @@ $ckeditorParams = http_build_query([
     'langCode' => $_GET['langCode'] ?? '',
 ]);
 
+// Captura e sanitiza a variável GET
+$type = isset($_GET['type']) ? htmlspecialchars($_GET['type']) : '';
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $id = $_POST['id'];
     $newName = trim($_POST['newName']);
@@ -25,41 +28,53 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (!$folder) {
         $_SESSION['message'] = "Pasta não encontrada.";
-        header("Location: manage-dir.php");
+        header("Location: manage-dir.php?$ckeditorParams");
         exit();
     }
 
     $oldPath = str_replace('\\', '/', $folder['path']); // Converte para barras normais
     $oldName = $folder['dir_name'];
 
-    // Gera o novo caminho da pasta
-    $newPath = str_replace('\\', '/', dirname($oldPath) . '/' . $safeName);
+    // Novo caminho da pasta
+    $newPath = str_replace($oldName, $safeName, $oldPath);
 
     try {
-        // Verifica se o nome é realmente diferente antes de tentar renomear
+        $conn->beginTransaction();
+
+        // Verifica se o nome mudou e renomeia a pasta
         if ($oldPath !== $newPath) {
             if (!rename($oldPath, $newPath)) {
                 throw new Exception("Erro ao renomear a pasta física.");
             }
         }
 
-        // Atualiza os dados no banco de dados
+        // Atualiza a tabela wcg_upload_dir
         $updateStmt = $conn->prepare("UPDATE wcg_upload_dir SET dir_name = :newName, path = :newPath, status = :status WHERE id = :id");
         $updateStmt->bindParam(':newName', $safeName);
         $updateStmt->bindParam(':newPath', $newPath);
         $updateStmt->bindParam(':status', $status);
         $updateStmt->bindParam(':id', $id);
+        $updateStmt->execute();
 
-        if ($updateStmt->execute()) {
-            $_SESSION['message'] = "Pasta editada com sucesso.";
-        } else {
-            throw new Exception("Erro ao atualizar o banco de dados.");
-        }
+        // Atualiza os caminhos das imagens na tabela wcg_upload_files
+        $updateFilesStmt = $conn->prepare("
+                            UPDATE wcg_upload_files 
+                            SET path = REPLACE(path, :oldPath, :newPath)
+                            WHERE id_dir = :id
+                            ");
+        $updateFilesStmt->bindParam(':oldPath', $oldPath);
+        $updateFilesStmt->bindParam(':newPath', $newPath);
+        $updateFilesStmt->bindParam(':id', $id);
+        $updateFilesStmt->execute();
+
+        $conn->commit();
+        $_SESSION['message'] = "Pasta e arquivos atualizados com sucesso.";
     } catch (Exception $e) {
-        $_SESSION['message'] = $e->getMessage();
+        $conn->rollBack();
+        $_SESSION['message'] = "Erro: " . $e->getMessage();
     }
 
-    header("Location: manage-dir.php");
+    header("Location: manage-dir.php?$ckeditorParams");
     exit();
 }
 
@@ -67,7 +82,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $id = $_GET['id'] ?? null;
 if (!$id) {
     $_SESSION['message'] = "ID inválido.";
-    header("Location: manage-dir.php?<?= $ckeditorParams ?>");
+    header("Location: manage-dir.php?$ckeditorParams");
     exit();
 }
 
@@ -79,7 +94,7 @@ $folder = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if (!$folder) {
     $_SESSION['message'] = "Pasta não encontrada.";
-    header("Location: manage-dir.php?<?= $ckeditorParams ?>");
+    header("Location: manage-dir.php?$ckeditorParams");
     exit();
 }
 ?>
@@ -118,7 +133,7 @@ if (!$folder) {
                         </select>
                     </div>
                     <button type="submit" class="btn btn-primary">Salvar Alterações</button>
-                    <a href="./manage-dir.php?<?= $ckeditorParams ?>" target="_self" class="btn btn-secondary">Cancelar</a>
+                    <a href="manage-dir.php?<?= $ckeditorParams ?>" class="btn btn-secondary">Cancelar</a>
                 </form>
             </div>
         </div>

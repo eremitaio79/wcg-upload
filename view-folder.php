@@ -9,6 +9,9 @@ $ckeditorParams = http_build_query([
     'langCode' => $_GET['langCode'] ?? '',
 ]);
 
+// Captura e sanitiza a variável GET
+$type = isset($_GET['type']) ? htmlspecialchars($_GET['type']) : '';
+
 // Obtém o ID da pasta a partir da URL
 $folder_id = $_GET['id'] ?? null;
 
@@ -25,10 +28,17 @@ $stmt_folder->bindParam(':folder_id', $folder_id, PDO::PARAM_INT);
 $stmt_folder->execute();
 $folder = $stmt_folder->fetch(PDO::FETCH_ASSOC);
 
+// var_dump($folder);
+
+
 if (!$folder) {
     $_SESSION['message'] = "Pasta não encontrada!";
-    header("Location: manage-dir.php");
-    exit;
+    if ($type === 'input') {
+        header("Location: manage-dir.php?type=input");
+    } else {
+        header("Location: manage-dir.php?$ckeditorParams");
+    }
+    exit();
 }
 
 // Busca os arquivos da pasta
@@ -37,6 +47,8 @@ $stmt_files = $conn->prepare($query_files);
 $stmt_files->bindParam(':folder_id', $folder_id, PDO::PARAM_INT);
 $stmt_files->execute();
 $files = $stmt_files->fetchAll(PDO::FETCH_ASSOC);
+extract($files);
+// var_dump($files);
 ?>
 
 <!DOCTYPE html>
@@ -91,23 +103,34 @@ $files = $stmt_files->fetchAll(PDO::FETCH_ASSOC);
     <main class="container my-5">
         <div class="row">
             <div class="col-12">
-                <h3>Arquivos da Pasta: <?= htmlspecialchars($folder['dir_name']); ?></h3>
-                <a href="manage-dir.php?<?= $ckeditorParams ?>" class="btn btn-secondary btn-sm mb-3">Voltar</a>
+                <h4>Arquivos da Pasta: <?= htmlspecialchars($folder['dir_name']); ?></h4>
                 <hr />
-                <div class="d-flex flex-wrap gap-3">
+                <?php if ($type === 'input') { ?>
+                    <a href="manage-dir.php?type=input" class="btn btn-secondary btn-sm mb-3">Voltar</a>
+                <?php } else { ?>
+                    <a href="manage-dir.php?<?= $ckeditorParams ?>" class="btn btn-secondary btn-sm mb-3">Voltar</a>
+                <?php } ?>
+                <hr />
+                
                     <?php if (empty($files)): ?>
-                        <div class="alert alert-info" role="alert">
+                        <div class="alert alert-warning" role="alert">
                             Nenhum arquivo encontrado na pasta.
                         </div>
                     <?php else: ?>
                         <?php foreach ($files as $file): ?>
                             <?php $isImage = preg_match('/\.(jpg|jpeg|png|gif|bmp|webp)$/i', $file['filename']); ?>
+
+                            <?php
+                            $url = $file['path'];
+                            $url_corrigida = str_replace("/wcg-upload/wcg-upload/", "/wcg-upload/", $url);            
+                            ?>
+
                             <div class="card"
                                 data-bs-toggle="<?= $isImage ? 'modal' : ''; ?>"
                                 data-bs-target="<?= $isImage ? '#previewModal' : ''; ?>"
-                                onclick="<?= $isImage ? "openModal('" . htmlspecialchars($file['path']) . "')" : "window.open('" . htmlspecialchars($file['path']) . "', '_blank')"; ?>">
+                                onclick="<?= $isImage ? "openModal('" . URL_SISTEMA2 . htmlspecialchars($url_corrigida) . "')" : "window.open('" . URL_SISTEMA2 . htmlspecialchars($url_corrigida) . "', '_blank')"; ?>">
                                 <?php if ($isImage): ?>
-                                    <img src="<?= htmlspecialchars($file['path']); ?>" alt="<?= htmlspecialchars($file['filename']); ?>" />
+                                    <img src="<?= URL_SISTEMA2 . htmlspecialchars($url_corrigida); ?>" class="rounded" />
                                 <?php else: ?>
                                     <div class="card-doc">
                                         <i class="fa-solid fa-file"></i>
@@ -116,9 +139,13 @@ $files = $stmt_files->fetchAll(PDO::FETCH_ASSOC);
                             </div>
                         <?php endforeach; ?>
                     <?php endif; ?>
-                </div>
+                
                 <hr />
-                <a href="manage-dir.php?<?= $ckeditorParams ?>" class="btn btn-secondary btn-sm mb-3">Voltar</a>
+                <?php if ($type === 'input') { ?>
+                    <a href="manage-dir.php?type=input" class="btn btn-secondary btn-sm mb-3">Voltar</a>
+                <?php } else { ?>
+                    <a href="manage-dir.php?<?= $ckeditorParams ?>" class="btn btn-secondary btn-sm mb-3">Voltar</a>
+                <?php } ?>
             </div>
         </div>
     </main>
